@@ -1,4 +1,13 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+
 import React, { useState } from "react";
 import { colors } from "../colors";
 import CustomButton from "../components/CustomButton";
@@ -6,14 +15,50 @@ import InputBar from "../components/InputBar";
 import { addData, getData } from "./dbfunctions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FileSystem from "expo-file-system";
+import { AntDesign } from "@expo/vector-icons";
 // import {} from  ''
 // import fs from "fs/promises"
+
+const TraverseSheetModal = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  return (
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </Pressable>
+    </View>
+  );
+};
 
 const HomeScreen = ({ navigation }) => {
   const [station, setStation] = useState("");
   let [traverseCount, setTraverseCount] = useState(1);
   let [pageNumber, setPageNumber] = useState(1);
-  const [traverseData, setTraverseData] = useState(Array());
+  const [traverseData, setTraverseData] = useState([]);
   const [description_1, setDescription_1] = useState("");
   const [description_2, setDescription_2] = useState("");
   const [bearingLL1, setBearingLL1] = useState("");
@@ -45,36 +90,32 @@ const HomeScreen = ({ navigation }) => {
   }
 
   function handleDone() {
-    // setTraverseData(traverseData);
-    // console.log(traverseData);
-    // addData(traverseData);
-    // let output = AsyncStorage.getItem("traverse");
-    // console.log(JSON.parse(output));
-    console.log(FileSystem.documentDirectory);
+    traverseData.push(desc_list);
     navigation.navigate("TraverseAction");
   }
   function next() {
-    setTraverseCount(traverseCount + 1);
-    setPageNumber((pageNumber += 1));
-    alert(typeof traverseData);
-    // setTraverseData(traverseData.push(desc_list));
-    // AsyncStorage.setItem("traverse", JSON.stringify(traverseData));
-    // Clearing the fields after next is clicked
+    if (pageNumber == traverseCount) {
+      setTraverseCount(traverseCount + 1);
+    }
+
     setStation("");
     clearFields();
   }
   function back() {
-    // alert("Pressed back");
     setPageNumber((pageNumber -= 1));
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Traverse</Text>
-      <Text style={styles.secondaryText}>Traverse Sheet {pageNumber}</Text>
+      <View style={styles.row}>
+        <Text style={styles.head}>Traverse</Text>
+        <AntDesign style={styles.topIcon} name="infocirlce" size={30} />
+      </View>
       {/* <Text style={styles.secondaryText}>
         {pageNumber} of {traverseCount}
       </Text> */}
-      <Text style={styles.label}>Instrument Station</Text>
+      <View style={styles.counterRow}>
+        <Text style={styles.label}>Instrument Station</Text>
+      </View>
       <InputBar
         style={styles.stationField}
         placeholder="Instrument station"
@@ -158,26 +199,26 @@ const HomeScreen = ({ navigation }) => {
       </View>
       {/* ================================================================= */}
       <View style={styles.buttonsTab}>
-        <CustomButton
+        {/* <CustomButton
           color={colors.primaryColor}
           type="outline"
           text={"Back"}
           width="90%"
           onclick={back}
           disabled={pageNumber == 1 ? true : false}
-        />
+        /> */}
         <CustomButton
           color={colors.primaryColor}
           type="outline"
           text={"Clear All"}
-          width="90%"
+          width="70%"
           onclick={clearFields}
         />
         <CustomButton
           color={colors.primaryColor}
           type="outline"
           text={"Next"}
-          width="90%"
+          width="70%"
           onclick={next}
         />
       </View>
@@ -195,6 +236,13 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   row: {
+    flexDirection: "row",
+    alignContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    // justifyContent: "flex-start",
+  },
+  counterRow: {
     flexDirection: "row",
     alignContent: "center",
     alignItems: "center",
@@ -277,5 +325,9 @@ const styles = StyleSheet.create({
     color: colors.primaryColor,
     fontWeight: "700",
     fontSize: 16,
+  },
+  topIcon: {
+    alignSelf: "center",
+    left: 200,
   },
 });

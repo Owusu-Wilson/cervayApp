@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Share } from "react-native";
+import { StyleSheet, Text, View, Share, Alert } from "react-native";
 import React from "react";
 import { colors } from "../colors";
 import { Card } from "../components/Card";
@@ -6,6 +6,28 @@ import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function TraverseActionScreen({ navigation }) {
+  function handleContinue() {
+    Alert.alert(
+      "Select Traverse Type",
+      "What type of traverse (Open or Close)",
+      [
+        {
+          text: "Open Traverse",
+          onPress: () => {
+            console.log("Open traverse Pressed");
+            navigation.navigate("OpenTraverse");
+          },
+        },
+        {
+          text: "Close Traverse",
+          onPress: () => {
+            console.log("Close traverse pressed");
+            navigation.navigate("CloseTraverse");
+          },
+        },
+      ]
+    );
+  }
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -28,14 +50,12 @@ export default function TraverseActionScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Select an option to Continue</Text>
+      {/* include view traverse data */}
       <Card onPress={onShare} icon="download" text="Export Traverse Data" />
       <Card
         icon="calculator"
-        onPress={() => {
-          alert("here");
-          navigation.navigate("AdjustmentResult");
-        }}
-        text="Calculate Adjustments"
+        onPress={handleContinue}
+        text="Continue To Adjustments"
       />
       <FloatingAction
         color={colors.primaryColor}

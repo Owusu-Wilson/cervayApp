@@ -11,10 +11,10 @@ export const CustomButton = (props) => {
     button: {
       backgroundColor: props.type == "outline" ? "white" : props.color,
       borderColor: props.type == "outline" ? props.color : null,
-      borderWidth: props.type == "outline" ? 3 : null,
+      borderWidth: props.type == "outline" ? 2 : null,
       width: props.width ? props.width : "70%",
       padding: 15,
-      borderRadius: 10,
+      borderRadius: 8,
       alignItems: "center",
     },
     buttonText: {

@@ -5,7 +5,7 @@ import { Card } from "../components/Card";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function TraverseActionScreen({ navigation }) {
+export default function TraverseActionScreen({ navigation, data }) {
   function handleContinue() {
     Alert.alert(
       "Select Traverse Type",
@@ -33,6 +33,8 @@ export default function TraverseActionScreen({ navigation }) {
       const result = await Share.share({
         message:
           "React Native | A framework for building native apps using React",
+        title: "Export",
+        url: "*.txt",
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

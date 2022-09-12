@@ -13,6 +13,9 @@ import AdjustmentResultsScreen from "./screens/AdjustmentResultsScreen";
 import { init_db } from "./db";
 import OpenTraverseScreen from "./screens/OpenTraverseScreen";
 import CloseTraverseScreen from "./screens/CloseTraverseScreen";
+import TraverseEntryScreen from "./screens/TraverseEntryScreen";
+import { NextOpenTraverseScreen } from "./screens/NextOpenTraverseScreen";
+import TraverseTableScreen from "./screens/TraverseTableScreen";
 
 // Fonts
 const Stack = createNativeStackNavigator();
@@ -75,9 +78,19 @@ export default function App() {
           component={HomeScreen}
         />
         <Stack.Screen
+          options={{ headerShown: true }}
+          name="TraverseEntry"
+          component={TraverseEntryScreen}
+        />
+        <Stack.Screen
           options={{ headerShown: false }}
           name="TraverseAction"
           component={TraverseActionScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="TraverseTable"
+          component={TraverseTableScreen}
         />
         <Stack.Screen
           options={{ headerShown: false }}
@@ -89,6 +102,11 @@ export default function App() {
           name="OpenTraverse"
           component={OpenTraverseScreen}
         />
+        {/* <Stack.Screen
+          options={{ headerShown: false }}
+          name="NextOpenTraverse"
+          component={NextOpenTraverseScreen}
+        /> */}
         <Stack.Screen
           options={{ headerShown: false }}
           name="CloseTraverse"

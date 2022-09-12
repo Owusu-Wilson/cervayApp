@@ -1,60 +1,101 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../colors";
 import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
 
-const CloseTraverseScreen = ({ navigation }) => {
+const NextOpenTraverseScreen = ({ navigation }) => {
+  const [closingX1, setClosingX1] = useState("");
+  const [closingY1, setClosingY1] = useState("");
+
+  const [closingX2, setClosingX2] = useState("");
+  const [closingY2, setClosingY2] = useState("");
+
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Close / Loop Traverse</Text>
+      <Text style={styles.head}>Open Traverse</Text>
       <Text style={styles.secondaryText}>
-        Enter the coordinates for your pillars
+        Enter the coordinates for the opening pillars
       </Text>
+      <Text style={styles.label}>closing Pillar 1</Text>
       {/* =========================================== */}
-      <Text style={styles.initialPillarLabel}>Reference Pillar</Text>
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
         <InputBar
-          placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          placeholder=""
+          value={closingX1}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setClosingX1(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Y Coord.</Text>
 
         <InputBar
-          placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
-        />
-      </View>
-      {/* =========================================== */}
-      <Text style={styles.closureLabel}>Closure</Text>
-      <View style={styles.row}>
-        <Text style={styles.label}>X Coord.</Text>
-
-        <InputBar
-          placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
-        />
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Y Coord.</Text>
-
-        <InputBar
-          placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          placeholder=""
+          value={closingY1}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setClosingY1(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
       {/* ====================================== */}
+      <Text style={styles.closingPillarLabel}>closing Pillar 2</Text>
+      {/* =========================================== */}
+      <View style={styles.row}>
+        <Text style={styles.label}>X Coord.</Text>
 
+        <InputBar
+          placeholder=""
+          value={closingX2}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setClosingX2(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
+        />
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Y Coord.</Text>
+
+        <InputBar
+          placeholder=""
+          value={closingY2}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setClosingY2(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
+        />
+      </View>
       {/* ====================================== */}
       <FloatingAction
         color={colors.primaryColor}
@@ -70,17 +111,17 @@ const CloseTraverseScreen = ({ navigation }) => {
 
       <CustomButton
         color={colors.primaryColor}
-        text={"Done"}
+        text={"Next"}
         width={370}
         onclick={() => {
-          navigation.navigate("TraverseEntry");
+          // navigation.navigate("NextOpenTraverse");
         }}
       />
     </View>
   );
 };
 
-export default CloseTraverseScreen;
+export default NextOpenTraverseScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -122,26 +163,15 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingRight: 40,
   },
-  initialPillarLabel: {
-    color: colors.hue,
+  closingPillarLabel: {
+    color: colors.primaryColor,
     fontFamily: "SSBold",
     alignContent: "center",
     textAlign: "center",
-    fontSize: 25,
+    fontSize: 20,
     alignSelf: "flex-start",
-    marginTop: 20,
-    marginBottom: 30,
-    paddingRight: 40,
-  },
-  closureLabel: {
-    color: colors.hue,
-    fontFamily: "SSBold",
-    alignContent: "center",
-    textAlign: "center",
-    fontSize: 25,
-    alignSelf: "flex-start",
-    marginTop: 60,
-    marginBottom: 30,
+    marginTop: 40,
+    marginBottom: 40,
     paddingRight: 40,
   },
   inputField: {

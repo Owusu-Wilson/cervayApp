@@ -4,8 +4,30 @@ import { colors } from "../colors";
 import { Card } from "../components/Card";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
+import * as FileSystem from "expo-file-system";
+import LargeButton from "../components/LargeButton";
 
-export default function TraverseActionScreen({ navigation, data }) {
+/**
+ * Using module xlsx to convert Json object received into an excel file
+ */
+
+import * as excel from "xlsx";
+
+export default function TraverseActionScreen({ route, navigation }) {
+  const data = route.params;
+
+  // var dataWorkSheet = excel.utils.json_to_sheet(data);
+  // // Process Data (add a new row)
+
+  // excel.utils.sheet_add_aoa(
+  //   dataWorkSheet,
+  //   [["Created " + new Date().toISOString()]],
+  //   { origin: -1 }
+  // );
+
+  // // Package and Release Data (`writeFile` tries to write and save an XLSB file)
+  // excel.writeFile(dataWorkSheet, "Report.xlsb");
+
   function handleContinue() {
     Alert.alert(
       "Select Traverse Type",
@@ -29,6 +51,16 @@ export default function TraverseActionScreen({ navigation, data }) {
     );
   }
   const onShare = async () => {
+    // console.log(data);
+    // var appDir = FileSystem.documentDirectory;
+    // const fileUri = `${appDir}${"myimg.jpg"}`;
+    // const uri = "https://unsplash.com/photos/ZkrxPVoYoCw";
+    // const downloadedFile = await FileSystem.downloadAsync(uri, fileUri);
+
+    // if (downloadedFile.status != 200) {
+    //   console.log("error");
+    // }
+
     try {
       const result = await Share.share({
         message:
@@ -53,12 +85,38 @@ export default function TraverseActionScreen({ navigation, data }) {
     <View style={styles.container}>
       <Text style={styles.head}>Select an option to Continue</Text>
       {/* include view traverse data */}
-      <Card onPress={onShare} icon="download" text="Export Traverse Data" />
-      <Card
+      {/* <Card onPress={onShare} icon="download" text="Export Traverse Data" /> */}
+      <LargeButton
+        width="90%"
+        type="mi"
+        iconName="table-view"
+        primaryText="View Traverse Data"
+        secondaryText="Select to view traverse data collected"
+        onPress={() => {
+          navigation.navigate("TraverseTable");
+        }}
+      />
+      <LargeButton
+        width="90%"
+        type="f"
+        iconName="file-download"
+        primaryText="Export Traverse Data"
+        secondaryText="Start an open traverse survey"
+        onPress={onShare}
+      />
+      <LargeButton
+        width="90%"
+        type="f"
+        iconName="calculator"
+        primaryText="Continue Computations"
+        secondaryText="Finish the adjustment computations"
+        onPress={onShare}
+      />
+      {/* <Card
         icon="calculator"
         onPress={handleContinue}
         text="Continue To Adjustments"
-      />
+      /> */}
       <FloatingAction
         color={colors.primaryColor}
         overlayColor="rgba(240, 255, 255, 0.02)"

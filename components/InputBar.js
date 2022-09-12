@@ -27,10 +27,12 @@ const InputBar = (props) => {
         onChangeText={props.onChangeText}
         autoCorrect
         caretHidden={false}
+        disableFullscreenUI={false}
         editable={props.editable}
         placeholder={props.placeholder}
         multiline={props.multiline}
         maxLength={props.maxLength}
+        onEndEditing={props.onEndEditing}
         keyboardType={props.dataType == "number" ? "decimal-pad" : "default"}
       />
     </View>

@@ -15,11 +15,9 @@ const NextOpenTraverseScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Open Traverse</Text>
-      <Text style={styles.secondaryText}>
-        Enter the coordinates for the opening pillars
-      </Text>
-      <Text style={styles.label}>closing Pillar 1</Text>
+      {/* <Text style={styles.head}>Open Traverse</Text> */}
+      <Text style={styles.secondaryText}>Closing bearing Data</Text>
+      <Text style={styles.label}>Foreward Station</Text>
       {/* =========================================== */}
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
@@ -58,7 +56,7 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         />
       </View>
       {/* ====================================== */}
-      <Text style={styles.closingPillarLabel}>closing Pillar 2</Text>
+      <Text style={styles.closingPillarLabel}>Instrument Station</Text>
       {/* =========================================== */}
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
@@ -114,7 +112,7 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         text={"Next"}
         width={370}
         onclick={() => {
-          // navigation.navigate("NextOpenTraverse");
+          navigation.navigate("TraverseEntry");
         }}
       />
     </View>

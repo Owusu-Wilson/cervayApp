@@ -14,7 +14,7 @@ import { init_db } from "./db";
 import OpenTraverseScreen from "./screens/OpenTraverseScreen";
 import CloseTraverseScreen from "./screens/CloseTraverseScreen";
 import TraverseEntryScreen from "./screens/TraverseEntryScreen";
-import { NextOpenTraverseScreen } from "./screens/NextOpenTraverseScreen";
+import NextOpenTraverseScreen from "./screens/NextOpenTraverseScreen";
 import TraverseTableScreen from "./screens/TraverseTableScreen";
 
 // Fonts
@@ -102,11 +102,11 @@ export default function App() {
           name="OpenTraverse"
           component={OpenTraverseScreen}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name="NextOpenTraverse"
           component={NextOpenTraverseScreen}
-        /> */}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="CloseTraverse"

@@ -69,6 +69,7 @@ const TraverseEntryScreen = ({ navigation }) => {
   const [bearingRR1, setBearingRR1] = useState("");
   const [bearingRR2, setBearingRR2] = useState("");
   const [value, setValue] = useState(null); //Set to the id of the current dropdown item
+  const [distance, setDistace] = useState(""); //Set to the id of the current dropdown item
 
   /**
    * An object of all the data received from the input fields.
@@ -77,6 +78,7 @@ const TraverseEntryScreen = ({ navigation }) => {
   const dataPayload = {
     id: traverseCount,
     traverseStation: station,
+    distance: distance,
     desc_1: description_1,
     desc_2: description_2,
 
@@ -86,6 +88,9 @@ const TraverseEntryScreen = ({ navigation }) => {
       RR1: bearingRR1,
       RR2: bearingRR2,
     },
+    mean:
+      (Number(bearingLL1) - Number(bearingRR2)) /
+      (Number(bearingLL2) - Number(bearingRR1)),
   };
   /**
    * Clears all the input field except the station name
@@ -102,8 +107,8 @@ const TraverseEntryScreen = ({ navigation }) => {
    * Event handler for the DOne button
    */
   function handleDone() {
-    // traverseData.push(dataPayload);
-    navigation.navigate("TraverseAction", traverseData);
+    traverseData.push(dataPayload);
+    navigation.navigate("TraverseAction", { tableData: traverseData });
   }
 
   /**
@@ -158,6 +163,7 @@ const TraverseEntryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* row for the text and dropdown */}
       <View style={styles.row}>
         <Text style={styles.head}>Traverse</Text>
         {/* <AntDesign style={styles.topIcon} name="infocirlce" size={30} /> */}
@@ -190,27 +196,30 @@ const TraverseEntryScreen = ({ navigation }) => {
         onChangeText={(text) => setStation(text)}
         width={350}
       />
+      <Text style={styles.warningInfo}>Use dot (.) as a seperator</Text>
       {/* Row 1  - Backsite a*/}
       <View style={styles.row}>
         <InputBar
-          style={styles.stationField}
+          style={styles.desc}
           placeholder="Backsight"
           value={description_1}
           multiline={true}
           onChangeText={(text) => setDescription_1(text)}
         />
-        <Text style={styles.desc}>LL </Text>
+        <Text style={styles.inlineLabel}>LL </Text>
         <InputBar
-          style={styles.stationField}
+          style={StyleSheet.create({
+            flex: 2 / 5,
+          })}
           placeholder="000.00.00"
           dataType="number"
           maxLength={11}
-          value={bearingLL1}
+          value={formatBearing(bearingLL1)}
           onEndEditing={(text) => {
             formatBearing(text);
           }}
           onChangeText={(text) => {
-            if (/^\d+$/.test(text) || text === "") {
+            if (/[0-9.]/.test(text) || text === "") {
               setBearingLL1(text);
             } else {
               alert("Only numbers are allowed");
@@ -227,7 +236,7 @@ const TraverseEntryScreen = ({ navigation }) => {
           multiline={true}
           onChangeText={(text) => setDescription_2(text)}
         />
-        <Text style={styles.desc}>LL </Text>
+        <Text style={styles.inlineLabel}>LL </Text>
         <InputBar
           style={styles.stationField}
           placeholder="000.00.00"
@@ -238,7 +247,7 @@ const TraverseEntryScreen = ({ navigation }) => {
             formatBearing(text);
           }}
           onChangeText={(text) => {
-            if (/^\d+$/.test(text) || text === "") {
+            if (/[0-9.]/.test(text) || text === "") {
               setBearingLL2(text);
             } else {
               alert("Only numbers are allowed");
@@ -255,7 +264,7 @@ const TraverseEntryScreen = ({ navigation }) => {
           multiline={true}
           editable={false}
         />
-        <Text style={styles.desc}>RR </Text>
+        <Text style={styles.inlineLabel}>RR </Text>
         <InputBar
           style={styles.stationField}
           placeholder="000.00.00"
@@ -266,7 +275,7 @@ const TraverseEntryScreen = ({ navigation }) => {
             formatBearing(text);
           }}
           onChangeText={(text) => {
-            if (/^\d+$/.test(text) || text === "") {
+            if (/[0-9.]/.test(text) || text === "") {
               setBearingRR1(text);
             } else {
               alert("Only numbers are allowed");
@@ -283,7 +292,7 @@ const TraverseEntryScreen = ({ navigation }) => {
           multiline={true}
           editable={false}
         />
-        <Text style={styles.desc}>RR </Text>
+        <Text style={styles.inlineLabel}>RR </Text>
         <InputBar
           style={styles.stationField}
           placeholder="000.00.00"
@@ -294,7 +303,7 @@ const TraverseEntryScreen = ({ navigation }) => {
             formatBearing(text);
           }}
           onChangeText={(text) => {
-            if (/^\d+$/.test(text) || text === "") {
+            if (/[0-9.]/.test(text) || text === "") {
               setBearingRR2(text);
             } else {
               alert("Only numbers are allowed");
@@ -304,10 +313,17 @@ const TraverseEntryScreen = ({ navigation }) => {
       </View>
       <Text style={styles.distanceLabel}>{"Distance (Ft)"}</Text>
       <InputBar
-        style={styles.stationField}
+        style={styles.distanceField}
         placeholder="xxx.xxx"
-        value={station}
-        onChangeText={(text) => setStation(text)}
+        value={distance}
+        onChangeText={(text) => {
+          if (/[0-9.]/.test(text) || text === "") {
+            setDistace(text);
+          } else {
+            alert("Only numbers are allowed");
+          }
+          7;
+        }}
         width={200}
       />
       {/* ================================================================= */}
@@ -359,11 +375,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   row: {
+    flex: 1,
     flexDirection: "row",
-    alignContent: "center",
-    alignItems: "center",
-    marginBottom: 5,
-    // justifyContent: "flex-start",
+    // marginBottom: 2,
   },
   dropdown: {
     margin: 16,
@@ -383,7 +397,23 @@ const styles = StyleSheet.create({
   stationField: {
     alignSelf: "flex-start",
   },
+  distanceField: {
+    alignSelf: "flex-start",
+  },
+  inputField: {
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+  },
   desc: {
+    flex: 1 / 5,
+    // color: "black",
+    // fontFamily: "SSBold",
+    // fontSize: 25,
+    // alignSelf: "center",
+    // alignItems: "center",
+  },
+  inlineLabel: {
+    flex: 1 / 5,
     color: "black",
     fontFamily: "SSBold",
     fontSize: 25,
@@ -404,18 +434,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     // alignSelf: "flex-start",
   },
+
+  warningInfo: {
+    color: "black",
+    fontFamily: "SSRegular",
+    fontSize: 20,
+    // alignSelf: "flex-start",
+  },
   distanceLabel: {
     color: "black",
     fontFamily: "SSRegular",
     fontSize: 30,
     marginTop: 20,
   },
-  container: {
-    flex: 1,
-    // justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
+
   inputContainer: {
     width: "80%",
   },
@@ -432,7 +464,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 1,
     marginHorizontal: 1,
-    marginTop: 20,
+    // marginTop: 20,
     justifyContent: "space-around",
   },
   buttonContainer: {

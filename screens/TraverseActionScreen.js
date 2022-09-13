@@ -14,8 +14,6 @@ import LargeButton from "../components/LargeButton";
 import * as excel from "xlsx";
 
 export default function TraverseActionScreen({ route, navigation }) {
-  const data = route.params;
-
   // var dataWorkSheet = excel.utils.json_to_sheet(data);
   // // Process Data (add a new row)
 
@@ -93,7 +91,11 @@ export default function TraverseActionScreen({ route, navigation }) {
         primaryText="View Traverse Data"
         secondaryText="Select to view traverse data collected"
         onPress={() => {
-          navigation.navigate("TraverseTable");
+          navigation.navigate("TraverseTable", {
+            itemId: 86,
+            tableData: route.params.tableData,
+            otherParam: "anything you want here",
+          });
         }}
       />
       <LargeButton

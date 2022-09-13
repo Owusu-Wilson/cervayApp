@@ -23,3 +23,12 @@ function formatBearing(bearing) {
 // exporting functions and variables from this module
 
 export { formatBearing };
+
+// function sanitizer(arr) {
+//   for (let index = 0; index < arr.length; index++) {
+//     if (arr[index] == ''){
+//       arr.
+//     }
+
+//   }
+// }

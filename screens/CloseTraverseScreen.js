@@ -14,7 +14,7 @@ const CloseTraverseScreen = ({ navigation }) => {
         Enter the coordinates for your pillars
       </Text>
       {/* =========================================== */}
-      <Text style={styles.initialPillarLabel}>Reference Pillar</Text>
+      <Text style={styles.initialPillarLabel}>Intrument station</Text>
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
@@ -34,7 +34,7 @@ const CloseTraverseScreen = ({ navigation }) => {
         />
       </View>
       {/* =========================================== */}
-      <Text style={styles.closureLabel}>Closure</Text>
+      <Text style={styles.closureLabel}>Reference</Text>
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     alignSelf: "flex-start",
-    marginTop: 60,
+    marginTop: 40,
     marginBottom: 30,
     paddingRight: 40,
   },

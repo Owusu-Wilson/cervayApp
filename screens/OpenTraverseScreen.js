@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
@@ -112,7 +112,30 @@ const OpenTraverseScreen = ({ navigation }) => {
         text={"Next"}
         width={370}
         onclick={() => {
-          navigation.navigate("NextOpenTraverse");
+          if (
+            initialX1 == "" ||
+            initialX2 == "" ||
+            initialY1 == "" ||
+            initialY2 == ""
+          ) {
+            Alert.alert("Oops!!!", "Fields cannot be left empty.");
+          } else {
+            if (
+              Number(initialX1) > 10_000 ||
+              Number(initialX2) > 10_000 ||
+              Number(initialY1) > 10_000 ||
+              Number(initialY2) > 10_000
+            ) {
+              Alert.alert(
+                "Wrong Input",
+                "Your values should not be greater than 360°"
+              );
+            } else {
+              navigation.navigate("NextOpenTraverse", {
+                initial_bearing: [initialX1, initialX2, initialY1, initialY2],
+              });
+            }
+          }
         }}
       />
     </View>

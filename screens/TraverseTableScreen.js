@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Button } from "react-native";
 import { DataTable, Snackbar, Card } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import {
   Cell,
   CellProps,
@@ -20,19 +20,64 @@ import {
 } from "react-native-table-component";
 import ActionButton from "../components/ActionButton";
 import { CustomButton } from "../components/CustomButton";
+import { FloatingAction } from "react-native-floating-action";
+
+import { colors } from "../colors";
+import { degrees_to_dms } from "../api/computations";
+import { formatBearing } from "../api/functions";
 export default function TraverseTableScreen({ route, navigation }) {
   const { itemId, tableData, otherParam } = route.params;
   const tableHead = ["From", "To", "Angle", "Distance"];
 
   const bearings = [];
+  var stations = [];
+  const distance = [];
   var fromStations = [];
-  const toStations = [];
+
+  var toStations = [];
+  /**
+   * This data array helps  put all the necessary data to be outputted in the right form.
+   */
+  var structuredData = []; //data array
+  const includedAngles = [];
+
   tableData.forEach((element) => {
     bearings.push(element.bearings);
-    fromStations.push(element.traverseStation);
-    toStations.push(element.traverseStation);
+    distance.push(element.distance);
+    stations.push(element.traverseStation);
+    includedAngles.push(element.mean);
   });
-  fromStations.pop();
+  stations.pop();
+  // Seperating the stations into FROM and TO
+  toStations = stations.filter((elem) => {
+    if (stations.indexOf(elem) % 2 != 0) {
+      return elem;
+    }
+  });
+  fromStations = stations.filter((elem) => {
+    if (stations.indexOf(elem) % 2 == 0) {
+      return elem;
+    }
+  });
+
+  structuredData = fromStations.map((elem) => {
+    var i = fromStations.indexOf(elem);
+    return [
+      elem,
+      toStations[i],
+      formatBearing(degrees_to_dms(includedAngles[i]).toString()),
+      distance[i + 1],
+    ];
+  });
+  // for (let index = 0; index < stations.length; index++) {
+  //   fromStations.push(stations[index]);
+  //   toStations.push(stations[index + 1]);
+  //   // if (stations[index + 1]) toStations.push(stations[index + 1]);
+  // }
+  var heights = stations.map((elem) => {
+    return 30;
+  });
+
   // const tableData = data;
   const tData = [
     ["1", "2", "3", "4"],
@@ -45,33 +90,31 @@ export default function TraverseTableScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.tableContainer}>
-        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
-          <Row data={tableHead} style={styles.head} textStyle={styles.text} />
-          <Col
-            data={fromStations}
-            style={styles.title}
-            heightArr={[30, 30, 30, 30, 30, 30, 30]}
-            textStyle={styles.text}
-          />
-          {/* <Col
-            data={tableTitle}
-            style={styles.title}
-            heightArr={[28, 28]}
-            textStyle={styles.text}
-          /> */}
-          {/* <Rows data={[stations]} textStyle={styles.text} /> */}
+        <Table borderStyle={styles.table}>
+          <Row data={tableHead} style={styles.head} textStyle={styles.head} />
+
+          <Rows data={structuredData} textStyle={styles.text} />
         </Table>
       </View>
-      {/* <Button
-        style={styles.btn}
-        title="Data"
-        onPress={() => {
-          tableData.forEach((element) => {
-            console.log(bearings);
-          });
-          console.log("Done");
+      <CustomButton
+        color={colors.primaryColor}
+        text={"Done"}
+        width={370}
+        onclick={() => {
+          console.log(stations.length, fromStations, toStations);
         }}
-      /> */}
+      />
+      <FloatingAction
+        color={colors.primaryColor}
+        overlayColor="rgba(240, 255, 255, 0.02)"
+        floatingIcon={<AntDesign name="back" size={24} color="white" />}
+        onPressMain={() => {
+          navigation.goBack();
+        }}
+        onPressItem={(name) => {
+          navigation.navigate(name);
+        }}
+      />
     </View>
   );
 }
@@ -97,4 +140,20 @@ const styles = StyleSheet.create({
   btn: {
     paddingTop: 100,
   },
+  text: {
+    fontSize: 15,
+    // borderColor: colors.primaryColor,
+    // borderWidth: 2,
+    padding: 5,
+  },
+  head: {
+    fontSize: 20,
+    fontFamily: "SSBold",
+    fontWeight: "700",
+    backgroundColor: colors.primaryColor,
+    color: "white",
+    borderColor: "black",
+    padding: 5,
+  },
+  table: { borderWidth: 2, borderColor: colors.primaryColor },
 });

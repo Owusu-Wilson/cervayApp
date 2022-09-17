@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Share, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Share,
+  Alert,
+  PermissionsAndroid,
+} from "react-native";
 import React from "react";
 import { colors } from "../colors";
 import { Card } from "../components/Card";
@@ -7,24 +14,42 @@ import { AntDesign } from "@expo/vector-icons";
 import * as FileSystem from "expo-file-system";
 import LargeButton from "../components/LargeButton";
 
+// import RNFS from "react-native-fs";
+import efs from "expo-file-system";
 /**
  * Using module xlsx to convert Json object received into an excel file
  */
 
-import * as excel from "xlsx";
+import XLSX from "xlsx";
 
 export default function TraverseActionScreen({ route, navigation }) {
-  // var dataWorkSheet = excel.utils.json_to_sheet(data);
-  // // Process Data (add a new row)
+  const { initial_bearing, closing_bearing } = route.params;
 
-  // excel.utils.sheet_add_aoa(
-  //   dataWorkSheet,
-  //   [["Created " + new Date().toISOString()]],
-  //   { origin: -1 }
-  // );
+  // const exportDataToExcel = () => {
+  //   // Created Sample data
+  //   let sample_data_to_export = [
+  //     { id: "1", name: "First User" },
+  //     { id: "2", name: "Second User" },
+  //   ];
 
-  // // Package and Release Data (`writeFile` tries to write and save an XLSB file)
-  // excel.writeFile(dataWorkSheet, "Report.xlsb");
+  //   let wb = XLSX.utils.book_new();
+  //   let ws = XLSX.utils.json_to_sheet(sample_data_to_export);
+  //   XLSX.utils.book_append_sheet(wb, ws, "Users");
+  //   const wbout = XLSX.write(wb, { type: "binary", bookType: "xlsx" });
+
+  //   // Write generated excel to Storage
+  //   return RNFS.writeFile(
+  //     RNFS.ExternalStorageDirectoryPath + "/my_exported_file.xlsx",
+  //     wbout,
+  //     "ascii"
+  //   )
+  //     .then((r) => {
+  //       console.log("Success");
+  //     })
+  //     .catch((e) => {
+  //       console.log("Error", e);
+  //     });
+  // };
 
   function handleContinue() {
     Alert.alert(
@@ -48,6 +73,44 @@ export default function TraverseActionScreen({ route, navigation }) {
       ]
     );
   }
+
+  const handleClick = async () => {
+    try {
+      // Check for Permission (check if permission is already given or not)
+      let isPermitedExternalStorage = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      );
+
+      if (!isPermitedExternalStorage) {
+        // Ask for permission
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: "Storage permission needed",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Permission Granted (calling our exportDataToExcel function)
+          exportDataToExcel();
+          console.log("Permission granted");
+        } else {
+          // Permission denied
+          console.log("Permission denied");
+        }
+      } else {
+        // Already have Permission (calling our exportDataToExcel function)
+        alert("Permisions accepted");
+      }
+    } catch (e) {
+      console.log("Error while checking permission");
+      console.log(e);
+      return;
+    }
+  };
   const onShare = async () => {
     // console.log(data);
     // var appDir = FileSystem.documentDirectory;
@@ -104,7 +167,7 @@ export default function TraverseActionScreen({ route, navigation }) {
         iconName="file-download"
         primaryText="Export Traverse Data"
         secondaryText="Start an open traverse survey"
-        onPress={onShare}
+        onPress={handleClick}
       />
       <LargeButton
         width="90%"
@@ -112,7 +175,9 @@ export default function TraverseActionScreen({ route, navigation }) {
         iconName="calculator"
         primaryText="Continue Computations"
         secondaryText="Finish the adjustment computations"
-        onPress={onShare}
+        onPress={() => {
+          console.log(initial_bearing, closing_bearing);
+        }}
       />
       {/* <Card
         icon="calculator"

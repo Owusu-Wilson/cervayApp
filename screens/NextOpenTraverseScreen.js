@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
@@ -6,7 +6,9 @@ import { colors } from "../colors";
 import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
 
-const NextOpenTraverseScreen = ({ navigation }) => {
+const NextOpenTraverseScreen = ({ route, navigation }) => {
+  const { initial_bearing } = route.params;
+
   const [closingX1, setClosingX1] = useState("");
   const [closingY1, setClosingY1] = useState("");
 
@@ -17,13 +19,13 @@ const NextOpenTraverseScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* <Text style={styles.head}>Open Traverse</Text> */}
       <Text style={styles.secondaryText}>Closing bearing Data</Text>
-      <Text style={styles.label}>Foreward Station</Text>
+      <Text style={styles.label}>Forward Station</Text>
       {/* =========================================== */}
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
         <InputBar
-          placeholder=""
+          placeholder="00000.000"
           value={closingX1}
           dataType="number"
           maxLength={14}
@@ -41,7 +43,7 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         <Text style={styles.label}>Y Coord.</Text>
 
         <InputBar
-          placeholder=""
+          placeholder="00000.000"
           value={closingY1}
           dataType="number"
           maxLength={14}
@@ -62,7 +64,7 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         <Text style={styles.label}>X Coord.</Text>
 
         <InputBar
-          placeholder=""
+          placeholder="00000.000"
           value={closingX2}
           dataType="number"
           maxLength={14}
@@ -80,7 +82,7 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         <Text style={styles.label}>Y Coord.</Text>
 
         <InputBar
-          placeholder=""
+          placeholder="00000.000"
           value={closingY2}
           dataType="number"
           maxLength={14}
@@ -112,7 +114,32 @@ const NextOpenTraverseScreen = ({ navigation }) => {
         text={"Next"}
         width={370}
         onclick={() => {
-          navigation.navigate("TraverseEntry");
+          if (
+            closingX1 == "" ||
+            closingX2 == "" ||
+            closingY1 == "" ||
+            closingY2 == ""
+          ) {
+            Alert.alert("Oops!!!", "Fields cannot be left empty.");
+          } else {
+            if (
+              Number(closingX1) > 360 ||
+              Number(closingX2) > 360 ||
+              Number(closingY1) > 360 ||
+              Number(closingY2) > 360
+            ) {
+              Alert.alert(
+                "Wrong Input",
+                "Your values should not be greater than 360°"
+              );
+            } else {
+              console.log(initial_bearing);
+              navigation.navigate("TraverseEntry", {
+                initial_bearing: initial_bearing,
+                closing_bearing: [closingX1, closingX2, closingY1, closingY2],
+              });
+            }
+          }
         }}
       />
     </View>

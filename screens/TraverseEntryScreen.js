@@ -17,50 +17,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 import { SelectCountry, Dropdown } from "react-native-element-dropdown";
-
+import { dms_to_degrees, toRadians } from "../api/computations";
 import { formatBearing } from "../api/functions";
 // import {} from  ''
 // import fs from "fs/promises"
 
-const TraverseSheetModal = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
-    </View>
-  );
-};
-
-const TraverseEntryScreen = ({ navigation }) => {
+const TraverseEntryScreen = ({ route, navigation }) => {
+  const { initial_bearing, closing_bearing } = route.params;
+  /**
+   * These variables are hooks that help to keep
+   *  track of certain values within the screen of the app.
+   */
   const [station, setStation] = useState("");
   let [traverseCount, setTraverseCount] = useState(1);
-  let [pageNumber, setPageNumber] = useState(1);
   const [traverseData, setTraverseData] = useState([]);
   const [description_1, setDescription_1] = useState("");
   const [description_2, setDescription_2] = useState("");
@@ -71,6 +40,17 @@ const TraverseEntryScreen = ({ navigation }) => {
   const [value, setValue] = useState(null); //Set to the id of the current dropdown item
   const [distance, setDistace] = useState(""); //Set to the id of the current dropdown item
 
+  /**
+   *
+   * Computations of the mean are held in this variable to be further processed
+   * with the _*formatBearing*_ function
+   * to put it in the right format.
+   */
+  const mean_val = Math.round(
+    dms_to_degrees(bearingLL1) -
+      dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
+      dms_to_degrees(bearingRR1)
+  ).toFixed(4);
   /**
    * An object of all the data received from the input fields.
    * This is to help in transporting the data across other pages and indexing the data
@@ -88,9 +68,7 @@ const TraverseEntryScreen = ({ navigation }) => {
       RR1: bearingRR1,
       RR2: bearingRR2,
     },
-    mean:
-      (Number(bearingLL1) - Number(bearingRR2)) /
-      (Number(bearingLL2) - Number(bearingRR1)),
+    mean: formatBearing(degrees_to_dms(mean_val).toString()),
   };
   /**
    * Clears all the input field except the station name
@@ -102,13 +80,26 @@ const TraverseEntryScreen = ({ navigation }) => {
     setBearingLL2("");
     setBearingRR1("");
     setBearingRR2("");
+    setDistace("");
   }
   /**
-   * Event handler for the DOne button
+   * Event handler for the Done button
    */
   function handleDone() {
-    traverseData.push(dataPayload);
-    navigation.navigate("TraverseAction", { tableData: traverseData });
+    if (traverseCount == 1) {
+      Alert.alert(
+        "Empty Traverse",
+        "You have not entered any traverse sheets. You cannot continue with computations"
+      );
+    } else {
+      navigation.navigate("TraverseAction", {
+        initial_bearing: initial_bearing,
+        closing_bearing: closing_bearing,
+        tableData: traverseData,
+        // the above data is sent to the TravesreActionScreen to be parsed further to the Traverse Table
+        // and Export screens.
+      });
+    }
   }
 
   /**
@@ -118,7 +109,10 @@ const TraverseEntryScreen = ({ navigation }) => {
   function updateItem() {
     const objIndex = traverseData.findIndex((obj) => obj.id == value);
     traverseData[objIndex] = dataPayload;
-    alert(`${traverseData[objIndex]["traverseStation"]} updated successfully`);
+    Alert.alert(
+      "Operation Successful",
+      `${traverseData[objIndex]["traverseStation"]} updated successfully`
+    );
   }
   /**
    * Handles the event press of Next button.
@@ -126,9 +120,12 @@ const TraverseEntryScreen = ({ navigation }) => {
    * Station should not be empty or be a duplicate of another that already exists
    */
   function next() {
+    // the station entry cannot be left empty.
     if (station == "") {
       Alert.alert("Empty station", "Please Fill out the Station value");
     }
+    // condition to check for duplicate stations in the station list
+    //  to avoid multiple traverse sheets with the same station name
     if (
       traverseData.find((element) => {
         return element.traverseStation == station;
@@ -136,11 +133,33 @@ const TraverseEntryScreen = ({ navigation }) => {
     ) {
       Alert.alert("Duplicate", "A field with the same station already exists");
     } else {
-      traverseData.push(dataPayload);
-      setTraverseCount(traverseCount + 1);
+      // condition to make sure that the data RR,LL...  are in the needed forms
+      // These check for the 3 different parts of the bearing received.
+      // It also test for the first value !> 360.
+      // i.e. False will be thrown if bearingRR1.split(".")[0] > 360
+      // Also, we check if the distance field is empty or not
+      if (
+        bearingLL1.split(".").length < 3 ||
+        bearingLL1.split(".")[0] > 360 ||
+        bearingLL2.split(".").length < 3 ||
+        bearingLL2.split(".")[0] > 360 ||
+        bearingRR1.split(".").length < 3 ||
+        bearingRR1.split(".")[0] > 360 ||
+        bearingRR2.split(".").length < 3 ||
+        bearingRR2.split(".")[0] > 360 ||
+        distance == ""
+      ) {
+        Alert.alert(
+          "Invalid Input",
+          "Your bearings are not in the right form. Please check your values"
+        );
+      } else {
+        traverseData.push(dataPayload);
+        setTraverseCount(traverseCount + 1);
 
-      setStation("");
-      clearFields();
+        setStation("");
+        clearFields();
+      }
     }
   }
 
@@ -159,6 +178,7 @@ const TraverseEntryScreen = ({ navigation }) => {
     setBearingLL2(item.bearings.LL2);
     setBearingRR1(item.bearings.RR1);
     setBearingRR2(item.bearings.RR2);
+    setDistace(item.distance);
   }
 
   return (
@@ -197,26 +217,24 @@ const TraverseEntryScreen = ({ navigation }) => {
         width={350}
       />
       <Text style={styles.warningInfo}>Use dot (.) as a seperator</Text>
-      {/* Row 1  - Backsite a*/}
+
       <View style={styles.row}>
         <InputBar
           style={styles.desc}
-          placeholder="Backsight"
+          placeholder="Back Station"
           value={description_1}
           multiline={true}
           onChangeText={(text) => setDescription_1(text)}
         />
         <Text style={styles.inlineLabel}>LL </Text>
         <InputBar
-          style={StyleSheet.create({
-            flex: 2 / 5,
-          })}
+          style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"
           maxLength={11}
-          value={formatBearing(bearingLL1)}
+          value={bearingLL1}
           onEndEditing={(text) => {
-            formatBearing(text);
+            text;
           }}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
@@ -230,21 +248,21 @@ const TraverseEntryScreen = ({ navigation }) => {
       {/* Row 2 - Foresite a*/}
       <View style={styles.row}>
         <InputBar
-          style={styles.stationField}
-          placeholder="Foresight"
+          style={styles.desc}
+          placeholder="Forward Station"
           value={description_2}
           multiline={true}
           onChangeText={(text) => setDescription_2(text)}
         />
         <Text style={styles.inlineLabel}>LL </Text>
         <InputBar
-          style={styles.stationField}
+          style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"
           maxLength={11}
           value={bearingLL2}
           onEndEditing={(text) => {
-            formatBearing(text);
+            text;
           }}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
@@ -258,21 +276,21 @@ const TraverseEntryScreen = ({ navigation }) => {
       {/* Row 3 - foresite b */}
       <View style={styles.row}>
         <InputBar
-          style={styles.stationField}
-          placeholder="Foresight"
+          style={styles.desc}
+          placeholder="Forward Station"
           value={description_2}
           multiline={true}
           editable={false}
         />
         <Text style={styles.inlineLabel}>RR </Text>
         <InputBar
-          style={styles.stationField}
+          style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"
           maxLength={11}
           value={bearingRR1}
           onEndEditing={(text) => {
-            formatBearing(text);
+            text;
           }}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
@@ -286,21 +304,21 @@ const TraverseEntryScreen = ({ navigation }) => {
       {/* Row 4  - backsite b*/}
       <View style={styles.row}>
         <InputBar
-          style={styles.stationField}
-          placeholder="Backsight"
+          style={styles.desc}
+          placeholder="Back Station"
           value={description_1}
           multiline={true}
           editable={false}
         />
         <Text style={styles.inlineLabel}>RR </Text>
         <InputBar
-          style={styles.stationField}
+          style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"
           maxLength={11}
           value={bearingRR2}
           onEndEditing={(text) => {
-            formatBearing(text);
+            text;
           }}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
@@ -380,13 +398,14 @@ const styles = StyleSheet.create({
     // marginBottom: 2,
   },
   dropdown: {
+    flex: 1,
     margin: 16,
     height: 50,
     width: "30%",
     borderBottomColor: colors.primaryColor,
     borderBottomWidth: 1,
-    left: 50,
-    alignSelf: "center",
+    marginLeft: 50,
+    alignSelf: "flex-end",
   },
   counterRow: {
     flexDirection: "row",
@@ -409,43 +428,43 @@ const styles = StyleSheet.create({
     // color: "black",
     // fontFamily: "SSBold",
     // fontSize: 25,
-    // alignSelf: "center",
-    // alignItems: "center",
+    alignSelf: "center",
+    alignItems: "center",
   },
   inlineLabel: {
     flex: 1 / 5,
     color: "black",
     fontFamily: "SSBold",
-    fontSize: 25,
+    fontSize: 20,
     alignSelf: "center",
     alignItems: "center",
+    marginTop: -15,
   },
   head: {
     color: colors.primaryColor,
     fontFamily: "SSBold",
     fontWeight: "700",
-    fontSize: 40,
+    fontSize: 30,
     alignSelf: "flex-start",
   },
 
   label: {
     color: "black",
     fontFamily: "SSRegular",
-    fontSize: 30,
+    fontSize: 25,
     // alignSelf: "flex-start",
   },
 
   warningInfo: {
-    color: "black",
+    color: "red",
     fontFamily: "SSRegular",
     fontSize: 20,
-    // alignSelf: "flex-start",
+    alignSelf: "center",
   },
   distanceLabel: {
     color: "black",
     fontFamily: "SSRegular",
-    fontSize: 30,
-    marginTop: 20,
+    fontSize: 25,
   },
 
   inputContainer: {
@@ -458,6 +477,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 5,
   },
+  bearingField: { flex: 2 / 5 },
   buttonsTab: {
     flexDirection: "row",
     alignContent: "space-around",

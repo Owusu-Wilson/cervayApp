@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../colors";
@@ -7,21 +7,34 @@ import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
 
 const CloseTraverseScreen = ({ navigation }) => {
+  const [initialX1, setInitialX1] = useState("");
+  const [initialY1, setInitialY1] = useState("");
+
+  const [initialX2, setInitialX2] = useState("");
+  const [initialY2, setInitialY2] = useState("");
+
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Close / Loop Traverse</Text>
-      <Text style={styles.secondaryText}>
-        Enter the coordinates for your pillars
-      </Text>
+      <Text style={styles.head}>Closed Traverse</Text>
+      {/* <Text style={styles.secondaryText}>Initial bearing Data</Text> */}
+      <Text style={styles.label}>Reference Station</Text>
       {/* =========================================== */}
-      <Text style={styles.initialPillarLabel}>Intrument station</Text>
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
         <InputBar
           placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          value={initialX1}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setInitialX1(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
       <View style={styles.row}>
@@ -29,19 +42,38 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          value={initialY1}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setInitialY1(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
+      {/* ====================================== */}
+      <Text style={styles.closingPillarLabel}>Instrument Station</Text>
       {/* =========================================== */}
-      <Text style={styles.closureLabel}>Reference</Text>
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
 
         <InputBar
           placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          value={initialX2}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setInitialX2(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
       <View style={styles.row}>
@@ -49,14 +81,21 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={""}
-          onChangeText={(text) => {}}
+          value={initialY2}
+          dataType="number"
+          maxLength={14}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              ///^\d+$/
+              setInitialY2(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+          }}
         />
       </View>
       {/* ====================================== */}
-
-      {/* ====================================== */}
-      <FloatingAction
+      {/* <FloatingAction
         color={colors.primaryColor}
         overlayColor="rgba(240, 255, 255, 0.02)"
         floatingIcon={<AntDesign name="back" size={24} color="white" />}
@@ -66,14 +105,37 @@ const CloseTraverseScreen = ({ navigation }) => {
         onPressItem={(name) => {
           navigation.navigate(name);
         }}
-      />
+      /> */}
 
       <CustomButton
         color={colors.primaryColor}
-        text={"Done"}
+        text={"Next"}
         width={370}
         onclick={() => {
-          navigation.navigate("TraverseEntry");
+          if (
+            initialX1 == "" ||
+            initialX2 == "" ||
+            initialY1 == "" ||
+            initialY2 == ""
+          ) {
+            Alert.alert("Oops!!!", "Fields cannot be left empty.");
+          } else {
+            if (
+              Number(initialX1) > 10000 ||
+              Number(initialX2) > 10000 ||
+              Number(initialY1) > 10000 ||
+              Number(initialY2) > 10000
+            ) {
+              Alert.alert(
+                "Wrong Input",
+                "Your values should not be greater than 360°"
+              );
+            } else {
+              navigation.navigate("TraverseEntry", {
+                initial_bearing: [initialX1, initialX2, initialY1, initialY2],
+              });
+            }
+          }
         }}
       />
     </View>
@@ -87,8 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 50,
-    padding: 20,
+    padding: 15,
   },
   head: {
     color: colors.primaryColor,
@@ -122,26 +183,15 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingRight: 40,
   },
-  initialPillarLabel: {
-    color: colors.hue,
+  closingPillarLabel: {
+    color: colors.primaryColor,
     fontFamily: "SSBold",
     alignContent: "center",
     textAlign: "center",
-    fontSize: 25,
-    alignSelf: "flex-start",
-    marginTop: 20,
-    marginBottom: 30,
-    paddingRight: 40,
-  },
-  closureLabel: {
-    color: colors.hue,
-    fontFamily: "SSBold",
-    alignContent: "center",
-    textAlign: "center",
-    fontSize: 25,
+    fontSize: 20,
     alignSelf: "flex-start",
     marginTop: 40,
-    marginBottom: 30,
+    marginBottom: 40,
     paddingRight: 40,
   },
   inputField: {

@@ -121,10 +121,10 @@ const OpenTraverseScreen = ({ navigation }) => {
             Alert.alert("Oops!!!", "Fields cannot be left empty.");
           } else {
             if (
-              Number(initialX1) > 10_000 ||
-              Number(initialX2) > 10_000 ||
-              Number(initialY1) > 10_000 ||
-              Number(initialY2) > 10_000
+              Number(initialX1) > 10000 ||
+              Number(initialX2) > 10000 ||
+              Number(initialY1) > 10000 ||
+              Number(initialY2) > 10000
             ) {
               Alert.alert(
                 "Wrong Input",

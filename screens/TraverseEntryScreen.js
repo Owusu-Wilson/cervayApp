@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 import { SelectCountry, Dropdown } from "react-native-element-dropdown";
-import { dms_to_degrees, toRadians } from "../api/computations";
+import { dms_to_degrees, degrees_to_dms, toRadians } from "../api/computations";
 import { formatBearing } from "../api/functions";
 // import {} from  ''
 // import fs from "fs/promises"

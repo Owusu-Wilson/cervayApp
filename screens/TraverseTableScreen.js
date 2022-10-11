@@ -38,7 +38,7 @@ export default function TraverseTableScreen({ route, navigation }) {
   /**
    * This data array helps  put all the necessary data to be outputted in the right form.
    */
-  var structuredData = []; //data array
+  var structuredData = []; //a 2D array
   const includedAngles = [];
 
   tableData.forEach((element) => {
@@ -62,12 +62,7 @@ export default function TraverseTableScreen({ route, navigation }) {
 
   structuredData = fromStations.map((elem) => {
     var i = fromStations.indexOf(elem);
-    return [
-      elem,
-      toStations[i],
-      formatBearing(degrees_to_dms(includedAngles[i]).toString()),
-      distance[i + 1],
-    ];
+    return [elem, toStations[i], includedAngles[i], distance[i + 1]];
   });
   // for (let index = 0; index < stations.length; index++) {
   //   fromStations.push(stations[index]);

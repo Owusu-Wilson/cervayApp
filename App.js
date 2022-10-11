@@ -16,7 +16,8 @@ import CloseTraverseScreen from "./screens/CloseTraverseScreen";
 import TraverseEntryScreen from "./screens/TraverseEntryScreen";
 import NextOpenTraverseScreen from "./screens/NextOpenTraverseScreen";
 import TraverseTableScreen from "./screens/TraverseTableScreen";
-
+import TempTraverseScreen from "./screens/TempTraverseScreen";
+import Buttomtab from "./navigation/tabs";
 // Fonts
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -73,9 +74,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          options={{ headerShown: true }}
-          name="Home"
+          options={{ headerShown: false }}
+          name="LandingScreen"
           component={HomeScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="HomeStack"
+          component={Buttomtab}
         />
         <Stack.Screen
           options={{ headerShown: true }}
@@ -101,16 +107,6 @@ export default function App() {
           options={{ headerShown: false }}
           name="OpenTraverse"
           component={OpenTraverseScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="NextOpenTraverse"
-          component={NextOpenTraverseScreen}
-        />
-        <Stack.Screen
-          options={{ headerShown: false }}
-          name="CloseTraverse"
-          component={CloseTraverseScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

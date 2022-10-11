@@ -1,3 +1,5 @@
+//This file contains helper functions to help convert between bearing and angle values.
+
 function formatBearing(bearing, sep = ",") {
   var bearingText = "";
   bearing = String(bearing);
@@ -13,7 +15,7 @@ function formatBearing(bearing, sep = ",") {
 }
 
 function print(...args) {
-  console.log(...args);
+  // console.log(...args);
 }
 
 // Converts from degrees to radians.
@@ -45,7 +47,11 @@ function bearing(startLat, startLng, destLat, destLng) {
 
 //   console.log(toDegrees())
 // console.log(toRadians(120.87))
-
+/**
+ * converts dms value to degrees .
+ * @param {*} dms_figure
+ * @returns
+ */
 function dms_to_degrees(dms_figure) {
   dms_figure = String(dms_figure);
   const bearing = dms_figure.split(".");
@@ -54,6 +60,11 @@ function dms_to_degrees(dms_figure) {
   return degreesValue;
 }
 
+/**
+ * converts degrees to dms value.
+ * @param {*} dms_figure
+ * @returns
+ */
 function degrees_to_dms(degree_figure) {
   degree_figure = String(degree_figure);
   const x = degree_figure.split(".");
@@ -83,11 +94,15 @@ const bearingLL2 = "234.54.23";
 const bearingRR1 = "007.003.21";
 const bearingRR2 = "65.43.004";
 
-const res = Math.round(
-  dms_to_degrees(bearingLL1) -
-    dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
-    dms_to_degrees(bearingRR1)
-).toFixed(4);
+// const res = Math.round(
+//   dms_to_degrees(bearingLL1) -
+//     dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
+//     dms_to_degrees(bearingRR1)
+// ).toFixed(4);
 
-const i = formatBearing(degrees_to_dms(res).toString());
-i;
+// const i = formatBearing(degrees_to_dms(res).toString());
+// i;
+
+console.log(dms_to_degrees(bearingLL1));
+console.log(bearingLL1);
+console.log(degrees_to_dms(dms_to_degrees(bearingLL1)));

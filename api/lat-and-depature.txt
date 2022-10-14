@@ -1,0 +1,33 @@
+adj_bearings_i (theta), distance (l),
+
+lat_i = l * cos(theta)
+dep_i = l * sin(theta)
+
+lat_error = sum (+ve  lat_i) - ( -ve  lat_i)
+dep_error = sum (+ve  dep_i) - ( -ve  dep_i)
+
+
+//=========================
+LATITUDE ERROR CONDITIONS
+if  lat_error is +ve , make it -ve for computing the correction_x
+//=========================
+
+//=========================
+DEPARTURE ERROR CONDITIONS
+if  dep_error is +ve , make it -ve for computing the correction_y
+//=========================
+correction_x = [(lat_error[conditions applied])/total_distance ] * distance_i
+correction_y = [(dep_error[conditions applied])/total_distance ] * distance_i
+(-(sum(dep_i)) / sum(distance)) * distance[1]
+
+NEXT
+----
+cordinates_1 = (instrumentStation_x, instrumentStation_y)
+cordinates_n = (instrumentStation_x, instrumentStation_y)
+
+-----------------------------------------------------------
+cordinates_2 TO cordinates_n-1
+cordinates_i = 
+(instrumentStation_x+ lat_i + correction_xi, 
+instrumentStation_y + dep_i + correction_yi)
+-----------------------------------------------------------

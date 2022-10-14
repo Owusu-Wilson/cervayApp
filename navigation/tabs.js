@@ -7,7 +7,7 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
   Ionicons,
-  FontAwesome5,
+  FontAwesome,
 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -24,12 +24,19 @@ import TraverseEntryScreen from "../screens/TraverseEntryScreen";
 import NextOpenTraverseScreen from "../screens/NextOpenTraverseScreen";
 import TraverseTableScreen from "../screens/TraverseTableScreen";
 import TempTraverseScreen from "../screens/TempTraverseScreen";
+import InfoFormScreen from "../screens/InfoFormScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 // ============================================
 const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
     <Stack.Navigator>
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="form"
+        component={InfoFormScreen}
+      />
       <Stack.Screen
         options={{ headerShown: false }}
         name="refStation"
@@ -73,8 +80,11 @@ const Buttomtab = () => {
         // tabBarInactiveTintColor: "white",
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: colors.primaryColor,
+          backgroundColor: "white",
           height: 70,
+          shadowColor: "black",
+          shadowOpacity: 0.25,
+          shadowOffset: 1.25,
         },
       })}
     >
@@ -82,6 +92,29 @@ const Buttomtab = () => {
         name="Data"
         component={AppStack}
         options={{
+          header: ({ focused }) => (
+            <View style={{}}>
+              <Text
+                style={{
+                  // alignContent: "center",
+                  textAlign: "center",
+                  alignSelf: "center",
+                  width: "50%",
+                  backgroundColor: colors.primaryColor,
+                  marginTop: 30,
+                  borderRadius: 15,
+                  padding: 5,
+                  color: "white",
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  fontFamily: "SSBold",
+                }}
+              >
+                ∙ Details ∙
+              </Text>
+            </View>
+          ),
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -92,11 +125,16 @@ const Buttomtab = () => {
               }}
             >
               <MaterialCommunityIcons
-                name="abacus"
+                name={focused ? "database-edit-outline" : "database-edit"}
                 size={25}
-                color={focused ? "red" : "white"}
+                color={focused ? colors.primaryColor : "#888888"}
               />
-              <Text style={{ color: focused ? "red" : "white", fontSize: 15 }}>
+              <Text
+                style={{
+                  color: focused ? colors.primaryColor : "#888888",
+                  fontSize: 15,
+                }}
+              >
                 Data
               </Text>
             </View>
@@ -117,12 +155,47 @@ const Buttomtab = () => {
               }}
             >
               <MaterialCommunityIcons
-                name="download"
+                name={focused ? "download-outline" : "download"}
                 size={25}
-                color={focused ? "red" : "white"}
+                color={focused ? colors.primaryColor : "#888888"}
               />
-              <Text style={{ color: focused ? "red" : "white", fontSize: 15 }}>
+              <Text
+                style={{
+                  color: focused ? colors.primaryColor : "#888888",
+                  fontSize: 15,
+                }}
+              >
                 Export
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Report"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: 50,
+                height: 50,
+              }}
+            >
+              <FontAwesome
+                name={focused ? "user-o" : "user"}
+                size={25}
+                color={focused ? colors.primaryColor : "#888888"}
+              />
+              <Text
+                style={{
+                  color: focused ? colors.primaryColor : "#888888",
+                  fontSize: 15,
+                }}
+              >
+                Report
               </Text>
             </View>
           ),

@@ -1,1 +1,32 @@
-{}
+[
+  {
+    "from": "a",
+    "to": "b",
+    "included_angle": "161.41.18"
+  },
+  {
+    "from": "b",
+    "to": "c",
+    "included_angle": "245.15.53"
+  },
+  {
+    "from": "c",
+    "to": "d",
+    "included_angle": "279.13.24"
+  },
+  {
+    "from": "d",
+    "to": "e",
+    "included_angle": "197.37.48"
+  },
+  {
+    "from": "e",
+    "to": "f",
+    "included_angle": "227.35.7"
+  },
+  {
+    "from": "f",
+    "to": "g",
+    "included_angle": "56.45.20"
+  }
+]

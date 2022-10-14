@@ -15,6 +15,8 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
+
+import { colors } from "../colors";
 /**
  * Custom Call to Large Button
  */
@@ -40,7 +42,7 @@ function LargeButton(props) {
     card: {
       flexDirection: "row",
       height: 150,
-      backgroundColor: props.bg ? props.bg : "#180829",
+      backgroundColor: props.bg ? props.bg : colors.primaryColor,
       elevation: 10,
       width: props.width ? props.width : "70%",
       marginHorizontal: 4,

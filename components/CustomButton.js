@@ -16,6 +16,7 @@ export const CustomButton = (props) => {
       padding: 15,
       borderRadius: 8,
       alignItems: "center",
+      ...props.style,
     },
     buttonText: {
       color: props.type == "outline" ? props.color : "white",

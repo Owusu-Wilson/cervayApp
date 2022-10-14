@@ -3,15 +3,15 @@ import React from "react";
 import { colors } from "../colors";
 import CustomButton from "../components/CustomButton";
 
-const image = {
-  uri: "google.com",
-};
+const image = require("../assets/landing.png");
+
 const HomeScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-        <Text style={styles.head}>Inside</Text>
+        {/* <Text style={styles.head}>Inside</Text> */}
         <CustomButton
+          style={styles.btn}
           color={colors.primaryColor}
           text={"Get Started"}
           width={370}
@@ -43,5 +43,15 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     // paddingLeft: 20,
     marginBottom: 10,
+  },
+  btnContainer: {
+    // backgroundColor: "yellow",
+    // flex: 1,
+    flexDirection: "row-reverse",
+    // justifyContent: "flex-end",
+    // alignContent: "flex-end",
+  },
+  btn: {
+    marginTop: "150%",
   },
 });

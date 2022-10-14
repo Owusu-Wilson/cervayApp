@@ -1,0 +1,50 @@
+alpha = 
+Pol(instrument_station.x - ref_station.x,
+instrument_station.y - ref_station.y) 
+
+------------------------------------------
+// alpha is 2 values distance, angle
+if angle is -ve, add 360
+if angle is +ve, do nothing
+------------------------------------------
+after conditions aer applied to alpha, alpha is the '1st adj angle'.
+
+-------------
+UNADJ ANGLES
+if <180 {++180}
+if >180 {--180}
+if >540 {--540}
+
+-------------
+unadj_1 = beta + included_angles1 | (apply conditions)
+unadj_2 = unadj_1 + included_angles2 | (apply conditions)
+...
+
+ADJUSTED BEARINGS
+adj_1 = beta (conditions applied)
+...
+beta = 
+Pol(ref_station.x - instrument_station.x,
+ref_station.y - instrument_station.y) 
+
+adj_n = beta(conditions applied i.e if -ve add 360, else do nothing)
+
+
+
+NEXT
+misclose = unadj_n - adj_n (beta)
+
+ADJUSTMENTS (dms values)
+gamma = misclose / num_stations
+
+a_1 = gamma * 1
+...
+a_n = gamma * n (should be misclose)
+
+
+NEXT
+compute the rest of adjusted values from the ADJUSTMENTS
+for adj_2 to adj_n-1 :
+    if misclose is -ve, e = +ve a_i
+    if misclose is +ve, e = -ve a_i
+adj_2 = unadj_2 + e

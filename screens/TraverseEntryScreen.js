@@ -38,7 +38,8 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const [bearingRR1, setBearingRR1] = useState("");
   const [bearingRR2, setBearingRR2] = useState("");
   const [value, setValue] = useState(null); //Set to the id of the current dropdown item
-  const [distance, setDistace] = useState(""); //Set to the id of the current dropdown item
+  const [distance1, setDistance1] = useState(""); //Set to the id of the current dropdown item
+  const [distance2, setDistance2] = useState(""); //Set to the id of the current dropdown item
 
   /**
    *
@@ -58,7 +59,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const dataPayload = {
     id: traverseCount,
     traverseStation: station,
-    distance: distance,
+    distance1: distance1,
     desc_1: description_1,
     desc_2: description_2,
 
@@ -80,7 +81,8 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     setBearingLL2("");
     setBearingRR1("");
     setBearingRR2("");
-    setDistace("");
+    setDistance1("");
+    setDistance2("");
   }
   /**
    * Event handler for the Done button
@@ -137,7 +139,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       // These check for the 3 different parts of the bearing received.
       // It also test for the first value !> 360.
       // i.e. False will be thrown if bearingRR1.split(".")[0] > 360
-      // Also, we check if the distance field is empty or not
+      // Also, we check if the distance1 field is empty or not
       if (
         bearingLL1.split(".").length < 3 ||
         bearingLL1.split(".")[0] > 360 ||
@@ -147,7 +149,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         bearingRR1.split(".")[0] > 360 ||
         bearingRR2.split(".").length < 3 ||
         bearingRR2.split(".")[0] > 360 ||
-        distance == ""
+        distance1 == ""
       ) {
         Alert.alert(
           "Invalid Input",
@@ -178,7 +180,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     setBearingLL2(item.bearings.LL2);
     setBearingRR1(item.bearings.RR1);
     setBearingRR2(item.bearings.RR2);
-    setDistace(item.distance);
+    setDistace(item.distance1);
   }
 
   return (
@@ -226,7 +228,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
           multiline={true}
           onChangeText={(text) => setDescription_1(text)}
         />
-        <Text style={styles.inlineLabel}>LL </Text>
+        {/* <Text style={styles.inlineLabel}>LL </Text> */}
         <InputBar
           style={styles.bearingField}
           placeholder="000.00.00"
@@ -254,7 +256,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
           multiline={true}
           onChangeText={(text) => setDescription_2(text)}
         />
-        <Text style={styles.inlineLabel}>LL </Text>
+        {/* <Text style={styles.inlineLabel}>LL </Text> */}
         <InputBar
           style={styles.bearingField}
           placeholder="000.00.00"
@@ -282,7 +284,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
           multiline={true}
           editable={false}
         />
-        <Text style={styles.inlineLabel}>RR </Text>
+        {/* <Text style={styles.inlineLabel}>RR </Text> */}
         <InputBar
           style={styles.bearingField}
           placeholder="000.00.00"
@@ -310,7 +312,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
           multiline={true}
           editable={false}
         />
-        <Text style={styles.inlineLabel}>RR </Text>
+        {/* <Text style={styles.inlineLabel}>RR </Text> */}
         <InputBar
           style={styles.bearingField}
           placeholder="000.00.00"
@@ -330,20 +332,36 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         />
       </View>
       <Text style={styles.distanceLabel}>{"Distance (Ft)"}</Text>
-      <InputBar
-        style={styles.distanceField}
-        placeholder="xxx.xxx"
-        value={distance}
-        onChangeText={(text) => {
-          if (/[0-9.]/.test(text) || text === "") {
-            setDistace(text);
-          } else {
-            alert("Only numbers are allowed");
-          }
-          7;
-        }}
-        width={200}
-      />
+      <View style={styles.row}>
+        <InputBar
+          style={styles.distanceField}
+          placeholder="1. xxx.xxx"
+          value={distance1}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              setDistance1(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+            7;
+          }}
+          width={200}
+        />
+        <InputBar
+          style={styles.distanceField}
+          placeholder="2. xxx.xxx"
+          value={distance2}
+          onChangeText={(text) => {
+            if (/[0-9.]/.test(text) || text === "") {
+              setDistance2(text);
+            } else {
+              alert("Only numbers are allowed");
+            }
+            7;
+          }}
+          width={200}
+        />
+      </View>
       {/* ================================================================= */}
       <View style={styles.buttonsTab}>
         <CustomButton
@@ -450,21 +468,24 @@ const styles = StyleSheet.create({
 
   label: {
     color: "black",
-    fontFamily: "SSRegular",
+    fontFamily: "SSBold",
     fontSize: 25,
-    // alignSelf: "flex-start",
+    fontWeight: "500",
   },
 
   warningInfo: {
     color: "red",
     fontFamily: "SSRegular",
     fontSize: 20,
-    alignSelf: "center",
+    alignSelf: "flex-end",
+    paddingRight: 40,
+    paddingBottom: 5,
   },
   distanceLabel: {
     color: "black",
-    fontFamily: "SSRegular",
+    fontFamily: "SSBold",
     fontSize: 25,
+    fontWeight: "500",
   },
 
   inputContainer: {

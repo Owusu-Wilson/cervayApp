@@ -103,6 +103,13 @@ const bearingRR2 = "65.43.004";
 // const i = formatBearing(degrees_to_dms(res).toString());
 // i;
 
-console.log(dms_to_degrees(bearingLL1));
-console.log(bearingLL1);
-console.log(degrees_to_dms(dms_to_degrees(bearingLL1)));
+// console.log(dms_to_degrees(bearingLL1));
+// console.log(bearingLL1);
+// console.log(degrees_to_dms(dms_to_degrees(bearingLL1)));
+
+// =================================================================
+let res = "";
+fetch("../data/data.json").then((results) => {
+  res = results.json();
+});
+console.log(res);

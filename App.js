@@ -83,7 +83,7 @@ export default function App() {
           name="HomeStack"
           component={Buttomtab}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: true }}
           name="TraverseEntry"
           component={TraverseEntryScreen}
@@ -107,7 +107,7 @@ export default function App() {
           options={{ headerShown: false }}
           name="OpenTraverse"
           component={OpenTraverseScreen}
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

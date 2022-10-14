@@ -17,7 +17,7 @@ const CloseTraverseScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.head}>Closed Traverse</Text>
       {/* <Text style={styles.secondaryText}>Initial bearing Data</Text> */}
-      <Text style={styles.label}>Reference Station</Text>
+      <Text style={styles.stations_label}>Reference Station</Text>
       {/* =========================================== */}
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
@@ -56,7 +56,7 @@ const CloseTraverseScreen = ({ navigation }) => {
         />
       </View>
       {/* ====================================== */}
-      <Text style={styles.closingPillarLabel}>Instrument Station</Text>
+      <Text style={styles.stations_label}>Instrument Station</Text>
       {/* =========================================== */}
       <View style={styles.row}>
         <Text style={styles.label}>X Coord.</Text>
@@ -113,28 +113,19 @@ const CloseTraverseScreen = ({ navigation }) => {
         width={370}
         onclick={() => {
           if (
-            initialX1 == "" ||
-            initialX2 == "" ||
-            initialY1 == "" ||
-            initialY2 == ""
+            Number(initialX1) > 100000000 ||
+            Number(initialX2) > 100000000 ||
+            Number(initialY1) > 100000000 ||
+            Number(initialY2) > 100000000
           ) {
-            Alert.alert("Oops!!!", "Fields cannot be left empty.");
+            Alert.alert(
+              "Wrong Input",
+              "Your coordinates are incorrect. Please recheck!"
+            );
           } else {
-            if (
-              Number(initialX1) > 10000 ||
-              Number(initialX2) > 10000 ||
-              Number(initialY1) > 10000 ||
-              Number(initialY2) > 10000
-            ) {
-              Alert.alert(
-                "Wrong Input",
-                "Your values should not be greater than 360°"
-              );
-            } else {
-              navigation.navigate("TraverseEntry", {
-                initial_bearing: [initialX1, initialX2, initialY1, initialY2],
-              });
-            }
+            navigation.navigate("TraverseEntry", {
+              initial_bearing: [initialX1, initialX2, initialY1, initialY2],
+            });
           }
         }}
       />
@@ -150,6 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: 15,
+    marginTop: 50,
   },
   head: {
     color: colors.primaryColor,
@@ -178,17 +170,19 @@ const styles = StyleSheet.create({
     fontFamily: "SSBold",
     alignContent: "center",
     textAlign: "center",
+    alignItems: "center",
     fontSize: 20,
     alignSelf: "flex-start",
     marginBottom: 30,
     paddingRight: 40,
+    paddingTop: 10,
   },
-  closingPillarLabel: {
+  stations_label: {
     color: colors.primaryColor,
     fontFamily: "SSBold",
     alignContent: "center",
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 25,
     alignSelf: "flex-start",
     marginTop: 40,
     marginBottom: 40,

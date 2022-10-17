@@ -26,11 +26,11 @@ import { colors } from "../colors";
 import { degrees_to_dms } from "../api/computations";
 import { formatBearing } from "../api/functions";
 export default function TraverseTableScreen({ route, navigation }) {
-  const { itemId, tableData, otherParam } = route.params;
+  const { itemId, tableData } = route.params;
   const tableHead = ["From", "To", "Angle", "Distance"];
 
   const bearings = [];
-  var stations = [];
+  // var stations = [];
   const distance = [];
   var fromStations = [];
 
@@ -44,32 +44,33 @@ export default function TraverseTableScreen({ route, navigation }) {
   tableData.forEach((element) => {
     bearings.push(element.bearings);
     distance.push(element.distance);
-    stations.push(element.traverseStation);
+    fromStations.push(element.desc_1);
+    toStations.push(element.desc_2);
     includedAngles.push(element.mean);
   });
-  stations.pop();
-  // Seperating the stations into FROM and TO
-  toStations = stations.filter((elem) => {
-    if (stations.indexOf(elem) % 2 != 0) {
-      return elem;
-    }
-  });
-  fromStations = stations.filter((elem) => {
-    if (stations.indexOf(elem) % 2 == 0) {
-      return elem;
-    }
-  });
+  // stations.pop();
+  // // Seperating the stations into FROM and TO
+  // toStations = stations.filter((elem) => {
+  //   if (stations.indexOf(elem) % 2 != 0) {
+  //     return elem;
+  //   }
+  // });
+  // fromStations = stations.filter((elem) => {
+  //   if (stations.indexOf(elem) % 2 == 0) {
+  //     return elem;
+  //   }
+  // });
 
   structuredData = fromStations.map((elem) => {
     var i = fromStations.indexOf(elem);
-    return [elem, toStations[i], includedAngles[i], distance[i + 1]];
+    return [elem, toStations[i], includedAngles[i], distance[i]];
   });
   // for (let index = 0; index < stations.length; index++) {
   //   fromStations.push(stations[index]);
   //   toStations.push(stations[index + 1]);
   //   // if (stations[index + 1]) toStations.push(stations[index + 1]);
   // }
-  var heights = stations.map((elem) => {
+  var heights = fromStations.map((elem) => {
     return 30;
   });
 
@@ -96,7 +97,7 @@ export default function TraverseTableScreen({ route, navigation }) {
         text={"Done"}
         width={370}
         onclick={() => {
-          console.log(stations.length, fromStations, toStations);
+          // console.log(stations.length, fromStations, toStations);
         }}
       />
       <FloatingAction

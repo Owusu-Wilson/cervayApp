@@ -124,7 +124,10 @@ const CloseTraverseScreen = ({ navigation }) => {
             );
           } else {
             navigation.navigate("TraverseEntry", {
-              initial_bearing: [initialX1, initialX2, initialY1, initialY2],
+              bearings: {
+                reference_station: { x: initialX1, y: initialX2 },
+                instrument_station: { x: initialY1, y: initialY2 },
+              },
             });
           }
         }}

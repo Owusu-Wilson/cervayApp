@@ -20,9 +20,20 @@ import * as XLSX from "xlsx";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-export default function TraverseActionScreen({ route, navigation }) {
-  const { initial_bearing, closing_bearing } = route.params;
+import {
+  Pol,
+  formatBearing,
+  degrees_to_dms,
+  dms_to_degrees,
+  bearing,
+  toDegrees,
+  toRadians,
+  getAdjustedBearings,
+  getCoordinates,
+  getUnadjustedBearings,
+} from "../api/functions";
 
+export default function TraverseActionScreen({ route, navigation }) {
   // const exportDataToExcel = () => {
   //   // Created Sample data
   //   let sample_data_to_export = [
@@ -181,6 +192,56 @@ export default function TraverseActionScreen({ route, navigation }) {
       Sharing.shareAsync(filename);
     });
   };
+  /**
+   * data to be used for computations. Received from the previous route.
+   * @type Object
+   */
+  const rawData = route.params.tableData;
+  const instrumentStation_angle = route.params.bearings.instrument_station;
+  const referenceStation_angle = route.params.bearings.reference_station;
+
+  const x = instrumentStation_angle.x - referenceStation_angle.x;
+  const y = instrumentStation_angle.y - referenceStation_angle.y;
+
+  const x2 = referenceStation_angle.x - instrumentStation_angle.x;
+  const y2 = referenceStation_angle.y - instrumentStation_angle.y;
+  let alpha = Pol(x, y);
+  let beta = Pol(x2, y2);
+  let num_traverses = rawData.length;
+  let included_angles = [];
+  let distances = [];
+  let unadjusted_bearings = [];
+  let adjusted_bearings = [];
+  let coordinates = [];
+  for (let index = 0; index < rawData.length; index++) {
+    const element = rawData[index];
+    distances.push(element.distance);
+    let L =
+      dms_to_degrees(element.bearings.LL2) -
+      dms_to_degrees(element.bearings.LL1);
+    let R =
+      dms_to_degrees(element.bearings.RR2) -
+      dms_to_degrees(element.bearings.RR1);
+
+    // Applying conditions to the differences to calculate the included angle
+    if (L < 0) {
+      L += 360;
+    }
+    if (R < 0) {
+      R += 360;
+    }
+    // Appending the included angle to its array
+    included_angles.push((L + R) / 2);
+  }
+  // unadjusted_bearings = getUnadjustedBearings(included_angles, alpha.theta);
+  // adjusted_bearings = getAdjustedBearings(
+  //   alpha.theta,
+  //   beta.theta,
+  //   num_traverses,
+  //   unadjusted_bearings
+  // );
+  // coordinates = getCoordinates(adjusted_bearings, )
+
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Select an option to Continue</Text>
@@ -193,6 +254,8 @@ export default function TraverseActionScreen({ route, navigation }) {
         primaryText="View Traverse Data"
         secondaryText="Select to view traverse data collected"
         onPress={() => {
+          console.log(num_traverses);
+          console.log(alpha);
           navigation.navigate("TraverseTable", {
             itemId: 86,
             tableData: route.params.tableData,
@@ -212,10 +275,10 @@ export default function TraverseActionScreen({ route, navigation }) {
         width="90%"
         type="f"
         iconName="calculator"
-        primaryText="Continue Computations"
+        primaryText="Compute Coordinates"
         secondaryText="Finish the adjustment computations"
         onPress={() => {
-          console.log(initial_bearing, closing_bearing);
+          console.log(distances);
         }}
       />
       {/* <Card
@@ -223,7 +286,7 @@ export default function TraverseActionScreen({ route, navigation }) {
         onPress={handleContinue}
         text="Continue To Adjustments"
       /> */}
-      <FloatingAction
+      {/* <FloatingAction
         color={colors.primaryColor}
         overlayColor="rgba(240, 255, 255, 0.02)"
         floatingIcon={<AntDesign name="back" size={24} color="white" />}
@@ -233,7 +296,7 @@ export default function TraverseActionScreen({ route, navigation }) {
         onPressItem={(name) => {
           navigation.navigate(name);
         }}
-      />
+      /> */}
       <StatusBar style="auto" />
     </View>
   );

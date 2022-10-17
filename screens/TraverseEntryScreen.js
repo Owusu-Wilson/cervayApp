@@ -18,13 +18,18 @@ import FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 import { SelectCountry, Dropdown } from "react-native-element-dropdown";
 import { dms_to_degrees, degrees_to_dms, toRadians } from "../api/computations";
-import { formatBearing } from "../api/functions";
+import {
+  formatBearing,
+  getAdjustedBearings,
+  getCoordinates,
+  getUnadjustedBearings,
+} from "../api/functions";
 import moment from "moment/moment";
 // import {} from  ''
 // import fs from "fs/promises"
 
 const TraverseEntryScreen = ({ route, navigation }) => {
-  const { initial_bearing, closing_bearing } = route.params;
+  const { bearings } = route.params;
   /**
    * These variables are hooks that help to keep
    *  track of certain values within the screen of the app.
@@ -59,7 +64,9 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const dataPayload = {
     id: traverseCount,
     traverseStation: station,
-    distance: (distance1 + distance2) / 2,
+    distance1: distance1,
+    distance2: distance2,
+    distance: (Number(distance1) + Number(distance2)) / 2,
     desc_1: description_1,
     desc_2: description_2,
 
@@ -115,8 +122,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     } else {
       storeData();
       navigation.navigate("TraverseAction", {
-        initial_bearing: initial_bearing,
-        closing_bearing: closing_bearing,
+        bearings: bearings,
         tableData: traverseData,
         // the above data is sent to the TravesreActionScreen to be parsed further to the Traverse Table
         // and Export screens.
@@ -203,7 +209,8 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     setBearingLL2(item.bearings.LL2);
     setBearingRR1(item.bearings.RR1);
     setBearingRR2(item.bearings.RR2);
-    setDistace(item.distance1);
+    setDistance1(item.distance1);
+    setDistance2(item.distance2);
   }
 
   return (

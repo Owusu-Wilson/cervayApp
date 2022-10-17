@@ -37,9 +37,9 @@ function formatBearing(bearing) {
   var bearingText = "";
   bearing = String(bearing);
   bearing = bearing.split(".");
-  bearing[0] += "°";
-  bearing[1] += "’";
-  bearing[2] += "”";
+  bearing[0] = String(Math.round(Number(bearing[0]))) + "°";
+  bearing[1] = String(Math.round(Number(bearing[1]))) + "’";
+  bearing[2] = String(Math.round(Number(bearing[2]))) + "”";
 
   for (let index = 0; index < bearing.length; index++) {
     bearingText += bearing[index];
@@ -67,9 +67,8 @@ function Pol(x, y) {
  * @returns
  */
 function getUnadjustedBearings(includedAngles, bearing) {
-  let included_angles = includedAngles;
   let unadj_angles = [];
-  let a = dms_to_degrees(data[0].included_angle) + bearing;
+  let a = dms_to_degrees(includedAngles[0]) + bearing;
   if (a < 180) {
     a = a + 180;
   } else if (a > 180) {
@@ -82,9 +81,9 @@ function getUnadjustedBearings(includedAngles, bearing) {
   unadj_angles[0] = a;
 
   let temp = 0;
-  for (let index = 1; index < data.length; index++) {
+  for (let index = 1; index < includedAngles.length; index++) {
     const element = data[index];
-    temp = dms_to_degrees(element.included_angle) + unadj_angles[index - 1];
+    temp = dms_to_degrees(element) + unadj_angles[index - 1];
 
     if (temp < 180) {
       temp = temp + 180;
@@ -153,7 +152,7 @@ function getAdjustedBearings(alpha, beta, num_stations, unadj_bearing) {
  * @param {number} instrumentStation instrument station coordinates recorded. Used as the first coordinates.
  * @returns coordinates{x, y}
  */
-function getCoordinates2(adjusted_bearings, distance, instrumentStation) {
+function getCoordinates(adjusted_bearings, distance, instrumentStation) {
   // lat_i = l * cos(theta)
   // dep_i = l * sin(theta)
 
@@ -262,12 +261,16 @@ function degrees_to_dms(degree_figure) {
 // exporting functions and variables from this module
 
 export {
+  Pol,
   formatBearing,
   degrees_to_dms,
   dms_to_degrees,
   bearing,
   toDegrees,
   toRadians,
+  getAdjustedBearings,
+  getCoordinates,
+  getUnadjustedBearings,
 };
 
 function sanitizer(arr) {

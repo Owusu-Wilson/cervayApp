@@ -23,16 +23,20 @@ import { CustomButton } from "../components/CustomButton";
 import { FloatingAction } from "react-native-floating-action";
 
 import { colors } from "../colors";
-import { degrees_to_dms } from "../api/computations";
-import { formatBearing } from "../api/functions";
+import { degrees_to_dms, toRadians } from "../api/computations";
+import { formatBearing, toDegrees } from "../api/functions";
 export default function TraverseTableScreen({ route, navigation }) {
-  const { itemId, tableData } = route.params;
+  const { itemId, tableData, computations } = route.params;
   const tableHead = ["From", "To", "Angle", "Distance"];
 
+  useEffect(() => {
+    console.log(computations);
+  });
   const bearings = [];
-  // var stations = [];
+  var stations = [];
   const distance = [];
   var fromStations = [];
+  let ll1 = [];
 
   var toStations = [];
   /**
@@ -40,16 +44,22 @@ export default function TraverseTableScreen({ route, navigation }) {
    */
   var structuredData = []; //a 2D array
   const includedAngles = [];
+  const includedAngles2 = [];
 
+  // computations.forEach((element) => {
+  //   includedAngles2.push(element.included_angles);
+  // });
   tableData.forEach((element) => {
+    stations.push(element.traverseStation);
     bearings.push(element.bearings);
     distance.push(element.distance);
-    fromStations.push(element.desc_1);
-    toStations.push(element.desc_2);
+    ll1.push(element.bearings.LL1);
+    // fromStations.push(element.desc_1);
+    // toStations.push(element.desc_2);
     includedAngles.push(element.mean);
   });
   // stations.pop();
-  // // Seperating the stations into FROM and TO
+  // Seperating the stations into FROM and TO
   // toStations = stations.filter((elem) => {
   //   if (stations.indexOf(elem) % 2 != 0) {
   //     return elem;
@@ -60,7 +70,12 @@ export default function TraverseTableScreen({ route, navigation }) {
   //     return elem;
   //   }
   // });
-
+  for (let index = 0; index < stations.length; index++) {
+    // const element = stations[index];
+    fromStations.push(stations[index]);
+    toStations.push(stations[index + 1]);
+  }
+  //  0, 1, 2,  3, 4....
   structuredData = fromStations.map((elem) => {
     var i = fromStations.indexOf(elem);
     return [elem, toStations[i], includedAngles[i], distance[i]];
@@ -75,13 +90,6 @@ export default function TraverseTableScreen({ route, navigation }) {
   });
 
   // const tableData = data;
-  const tData = [
-    ["1", "2", "3", "4"],
-    ["a", "b", "c", "d"],
-    ["1", "2", "3", "456\n789"],
-    ["a", "b", "c", "d"],
-  ];
-  const tableTitle = ["Title", "Title2", "Title3", "Title4"];
 
   return (
     <View style={styles.container}>
@@ -92,15 +100,15 @@ export default function TraverseTableScreen({ route, navigation }) {
           <Rows data={structuredData} textStyle={styles.text} />
         </Table>
       </View>
-      <CustomButton
+      {/* <CustomButton
         color={colors.primaryColor}
         text={"Done"}
         width={370}
         onclick={() => {
           // console.log(stations.length, fromStations, toStations);
         }}
-      />
-      <FloatingAction
+      /> */}
+      {/* <FloatingAction
         color={colors.primaryColor}
         overlayColor="rgba(240, 255, 255, 0.02)"
         floatingIcon={<AntDesign name="back" size={24} color="white" />}
@@ -110,7 +118,7 @@ export default function TraverseTableScreen({ route, navigation }) {
         onPressItem={(name) => {
           navigation.navigate(name);
         }}
-      />
+      /> */}
     </View>
   );
 }
@@ -148,8 +156,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     backgroundColor: colors.primaryColor,
     color: "white",
-    borderColor: "black",
+    borderColor: "white",
     padding: 5,
+    borderWidth: 0.5,
   },
   table: { borderWidth: 2, borderColor: colors.primaryColor },
 });

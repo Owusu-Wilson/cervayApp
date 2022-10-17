@@ -26,6 +26,7 @@ import TraverseTableScreen from "../screens/TraverseTableScreen";
 import TempTraverseScreen from "../screens/TempTraverseScreen";
 import InfoFormScreen from "../screens/InfoFormScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import CoordinatesTableScreen from "../screens/CoordinatesTableScreen";
 // ============================================
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,11 @@ const AppStack = () => {
         options={{ headerShown: false }}
         name="AdjustmentResult"
         component={AdjustmentResultsScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Coordinates"
+        component={CoordinatesTableScreen}
       />
       <Stack.Screen
         options={{ headerShown: false }}

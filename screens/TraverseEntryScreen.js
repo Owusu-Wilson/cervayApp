@@ -17,13 +17,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FileSystem from "expo-file-system";
 import { AntDesign } from "@expo/vector-icons";
 import { SelectCountry, Dropdown } from "react-native-element-dropdown";
-import { dms_to_degrees, degrees_to_dms, toRadians } from "../api/computations";
+
 import {
+  Pol,
   formatBearing,
+  degrees_to_dms,
+  dms_to_degrees,
+  bearing,
+  toDegrees,
+  toRadians,
   getAdjustedBearings,
   getCoordinates,
   getUnadjustedBearings,
 } from "../api/functions";
+
 import moment from "moment/moment";
 // import {} from  ''
 // import fs from "fs/promises"
@@ -53,14 +60,70 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * with the _*formatBearing*_ function
    * to put it in the right format.
    */
-  const mean_val =
-    dms_to_degrees(bearingLL1) -
-    dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
-    dms_to_degrees(bearingRR1);
+
+  let a = dms_to_degrees(bearingLL2) - dms_to_degrees(bearingLL1);
+  let b = dms_to_degrees(bearingRR1) - dms_to_degrees(bearingRR2);
+
+  if (a < 0) {
+    a = a + 360;
+  }
+  if (b < 0) {
+    b = b + 360;
+  }
+  const mean_val = (a + b) / 2;
+
   /**
    * An object of all the data received from the input fields.
    * This is to help in transporting the data across other pages and indexing the data
    */
+
+  function doComputations() {
+    const instrumentStation_angle = bearings.instrument_station;
+    const referenceStation_angle = bearings.reference_station;
+
+    const x = instrumentStation_angle.x - referenceStation_angle.x;
+    const y = instrumentStation_angle.y - referenceStation_angle.y;
+
+    const x2 = referenceStation_angle.x - instrumentStation_angle.x;
+    const y2 = referenceStation_angle.y - instrumentStation_angle.y;
+    let alpha = Pol(x, y);
+    let beta = Pol(x2, y2);
+    let num_traverses = traverseData.length;
+    let included_angles = [];
+    let distances = [];
+    let unadjusted_bearings = [];
+    let adjusted_bearings = [];
+    let coordinates = [];
+    for (let index = 0; index < traverseData.length; index++) {
+      const element = traverseData[index];
+      distances.push(element.distance);
+      let L =
+        dms_to_degrees(element.bearings.LL2) -
+        dms_to_degrees(element.bearings.LL1);
+      let R =
+        dms_to_degrees(element.bearings.RR2) -
+        dms_to_degrees(element.bearings.RR1);
+
+      // Applying conditions to the differences to calculate the included angle
+      if (L < 0) {
+        L += 360;
+      }
+      if (R < 0) {
+        R += 360;
+      }
+      // Appending the included angle to its array
+      included_angles.push((L + R) / 2);
+    }
+    unadjusted_bearings = getUnadjustedBearings(included_angles, alpha.theta);
+
+    return {
+      distances: distances,
+      included_angles: included_angles,
+      unadjusted_bearings: unadjusted_bearings,
+      adjusted_bearings: adjusted_bearings,
+      coordinates: coordinates,
+    };
+  }
   const dataPayload = {
     id: traverseCount,
     traverseStation: station,
@@ -76,7 +139,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       RR1: bearingRR1,
       RR2: bearingRR2,
     },
-    mean: formatBearing(degrees_to_dms(mean_val).toString()),
+    mean: mean_val,
   };
   /**
    * Clears all the input field except the station name
@@ -121,9 +184,13 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       );
     } else {
       storeData();
+      let computedArrays = doComputations();
+      console.log(computedArrays);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
         tableData: traverseData,
+        // computations: doComputations(), //
+        computations: "i am data",
         // the above data is sent to the TravesreActionScreen to be parsed further to the Traverse Table
         // and Export screens.
       });
@@ -349,7 +416,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         />
         {/* <Text style={styles.inlineLabel}>RR </Text> */}
         <InputBar
-          setDistace
+          setDistance
           style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"

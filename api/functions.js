@@ -82,7 +82,7 @@ function getUnadjustedBearings(includedAngles, bearing) {
 
   let temp = 0;
   for (let index = 1; index < includedAngles.length; index++) {
-    const element = data[index];
+    const element = includedAngles[index];
     temp = dms_to_degrees(element) + unadj_angles[index - 1];
 
     if (temp < 180) {

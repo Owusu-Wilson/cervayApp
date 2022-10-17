@@ -34,6 +34,8 @@ import {
 } from "../api/functions";
 
 export default function TraverseActionScreen({ route, navigation }) {
+  const { computations } = route.params;
+
   // const exportDataToExcel = () => {
   //   // Created Sample data
   //   let sample_data_to_export = [
@@ -59,6 +61,12 @@ export default function TraverseActionScreen({ route, navigation }) {
   //       console.log("Error", e);
   //     });
   // };
+
+  let stations = [];
+
+  route.params.tableData.forEach((element) => {
+    stations.push(element.traverseStation);
+  });
 
   function handleContinue() {
     Alert.alert(
@@ -279,6 +287,14 @@ export default function TraverseActionScreen({ route, navigation }) {
         secondaryText="Finish the adjustment computations"
         onPress={() => {
           console.log(distances);
+          console.log(stations);
+          console.log(route.params);
+          navigation.navigate("Coordinates", {
+            itemId: 87,
+            tableData: route.params.tableData,
+            computations: computations,
+            otherParam: "anything you want here",
+          });
         }}
       />
       {/* <Card

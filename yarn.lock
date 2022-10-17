@@ -3764,6 +3764,11 @@ expo-modules-core@0.9.2:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-print@~11.2.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/expo-print/-/expo-print-11.2.0.tgz#6a80d78acd32d2dcb74cb080637fdea8ae6d47b8"
+  integrity sha512-sWTBKpvvZ3CWCSxugKu5RgbIDyxNt5b+NmofHx8DgJcTVswaaAd/NCexkmSKHNkaWamt6DbO83bDd4KJNxKgtQ==
+
 expo-sharing@~10.2.0:
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/expo-sharing/-/expo-sharing-10.2.0.tgz#527a143d7365998ab77cb44a84b81c793e51dc4e"

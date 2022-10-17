@@ -8,16 +8,13 @@ import * as Font from "expo-font";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import HomeScreen from "./screens/HomeScreen";
-import TraverseActionScreen from "./screens/TraverseActionScreen";
-import AdjustmentResultsScreen from "./screens/AdjustmentResultsScreen";
+import PreviousTraverseScreen from "./screens/PreviousTraverseScreen";
 import { init_db } from "./db";
-import OpenTraverseScreen from "./screens/OpenTraverseScreen";
-import CloseTraverseScreen from "./screens/CloseTraverseScreen";
-import TraverseEntryScreen from "./screens/TraverseEntryScreen";
-import NextOpenTraverseScreen from "./screens/NextOpenTraverseScreen";
-import TraverseTableScreen from "./screens/TraverseTableScreen";
-import TempTraverseScreen from "./screens/TempTraverseScreen";
+
 import Buttomtab from "./navigation/tabs";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 // Fonts
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,6 +22,26 @@ const Drawer = createDrawerNavigator();
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [dataPresent, setDataPresent] = useState(false);
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("user_details");
+      if (value !== null) {
+        // value previously stored
+        console.log(value.name);
+        alert(value.name);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+  const loadData = () => {
+    AsyncStorage.getAllKeys().then((data) => {
+      if (data !== null) {
+        setDataPresent(false);
+      }
+    });
+  };
   useEffect(() => {
     init_db();
   });
@@ -37,6 +54,8 @@ export default function App() {
           SSLight: require("./assets/fonts/SourceSansPro/SourceSansProLight.ttf"),
           SSRegular: require("./assets/fonts/SourceSansPro/SourceSansProRegular.ttf"),
           SSBold: require("./assets/fonts/SourceSansPro/SourceSansProBold.ttf"),
+        }).then(() => {
+          getData();
         });
         // Initializing the database file i.e creating it if it doesnt exist
 
@@ -80,15 +99,15 @@ export default function App() {
         />
         <Stack.Screen
           options={{ headerShown: false }}
+          name="PreviousTraverse"
+          component={PreviousTraverseScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
           name="HomeStack"
           component={Buttomtab}
         />
         {/* <Stack.Screen
-          options={{ headerShown: true }}
-          name="TraverseEntry"
-          component={TraverseEntryScreen}
-        />
-        <Stack.Screen
           options={{ headerShown: false }}
           name="TraverseAction"
           component={TraverseActionScreen}

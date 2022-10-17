@@ -1,4 +1,3 @@
-
 // import {formatBearing, degrees_to_dms, dms_to_degrees} from '../api/functions'
 /**
  *
@@ -398,16 +397,26 @@ function getCoordinates2(adjusted_bearings, distance, instrumentStation) {
     x: instrumentStation.x,
     y: instrumentStation.y,
   };
-  coordinates[1] = {
-    x: instrumentStation.x + lat_i[0],
-    y: instrumentStation.y + dep_i[0],
-  };
+  // coordinates[1] = {
+  //   x: instrumentStation.x + lat_i[0],
+  //   y: instrumentStation.y + dep_i[0],
+  // };
 
   // getting thte coordinates from positions 1 to n-1
-  for (let index = 2; index < adjusted_bearings.length - 1; index++) {
-    coordinates[index] = {
-      x: coordinates[index - 1].x + lat_i[index - 1] + corrections_x[index - 2],
-      y: coordinates[index - 1].y + dep_i[index - 1] + corrections_y[index - 2],
+  for (let index = 0; index < distance.length - 2; index++) {
+    coordinates[index + 1] = {
+      x:
+        coordinates[index].x +
+        lat_i[index] +
+        (corrections_x[index - 1] || (true && 0)),
+      y:
+        coordinates[index].y +
+        dep_i[index] +
+        (corrections_y[index - 1] || (true && 0)),
+      // x: lat_i[index],
+      // y: coordinates[index].x,
+      // z: corrections_x[index - 1] || (true && 0),
+      // y: coordinates[index + 1].y + dep_i[index] + corrections_y[index - 1],
     };
   }
   return {

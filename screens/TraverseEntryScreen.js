@@ -19,6 +19,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { SelectCountry, Dropdown } from "react-native-element-dropdown";
 import { dms_to_degrees, degrees_to_dms, toRadians } from "../api/computations";
 import { formatBearing } from "../api/functions";
+import moment from "moment/moment";
 // import {} from  ''
 // import fs from "fs/promises"
 
@@ -37,7 +38,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const [bearingLL2, setBearingLL2] = useState("");
   const [bearingRR1, setBearingRR1] = useState("");
   const [bearingRR2, setBearingRR2] = useState("");
-  const [value, setValue] = useState(null); //Set to the id of the current dropdown item
+  const [dropdownValue, setValue] = useState(null); //Set to the id of the current dropdown item
   const [distance1, setDistance1] = useState(""); //Set to the id of the current dropdown item
   const [distance2, setDistance2] = useState(""); //Set to the id of the current dropdown item
 
@@ -47,11 +48,10 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * with the _*formatBearing*_ function
    * to put it in the right format.
    */
-  const mean_val = Math.round(
+  const mean_val =
     dms_to_degrees(bearingLL1) -
-      dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
-      dms_to_degrees(bearingRR1)
-  ).toFixed(4);
+    dms_to_degrees(bearingRR2) / dms_to_degrees(bearingLL2) -
+    dms_to_degrees(bearingRR1);
   /**
    * An object of all the data received from the input fields.
    * This is to help in transporting the data across other pages and indexing the data
@@ -59,7 +59,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const dataPayload = {
     id: traverseCount,
     traverseStation: station,
-    distance1: distance1,
+    distance: (distance1 + distance2) / 2,
     desc_1: description_1,
     desc_2: description_2,
 
@@ -84,6 +84,25 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     setDistance1("");
     setDistance2("");
   }
+  let traverseArray = [];
+  const storeData = async (key, value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      const storedTraverses = await AsyncStorage.getItem("traverse_data");
+      if (storedTraverses !== null) {
+        traverseArray = JSON.parse(storedTraverses);
+        // await AsyncStorage.setItem(key, jsonValue)
+      }
+      traverseArray.push(dataPayload);
+      await AsyncStorage.setItem(
+        "traverse_data",
+        JSON.stringify(traverseArray)
+      );
+    } catch (e) {
+      // saving error
+    }
+  };
+
   /**
    * Event handler for the Done button
    */
@@ -94,6 +113,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         "You have not entered any traverse sheets. You cannot continue with computations"
       );
     } else {
+      storeData();
       navigation.navigate("TraverseAction", {
         initial_bearing: initial_bearing,
         closing_bearing: closing_bearing,
@@ -109,7 +129,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * An event handler for the update button
    */
   function updateItem() {
-    const objIndex = traverseData.findIndex((obj) => obj.id == value);
+    const objIndex = traverseData.findIndex((obj) => obj.id == dropdownValue);
     traverseData[objIndex] = dataPayload;
     Alert.alert(
       "Operation Successful",
@@ -133,7 +153,10 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         return element.traverseStation == station;
       })
     ) {
-      Alert.alert("Duplicate", "A field with the same station already exists");
+      Alert.alert(
+        "Duplicate",
+        "A field with the same station already exists.Click on update"
+      );
     } else {
       // condition to make sure that the data RR,LL...  are in the needed forms
       // These check for the 3 different parts of the bearing received.
@@ -202,10 +225,15 @@ const TraverseEntryScreen = ({ route, navigation }) => {
           valueField="id"
           placeholder="Select Traverse"
           searchPlaceholder="Search..."
-          value={value}
+          value={dropdownValue}
           onChange={dropdownItem}
           renderLeftIcon={() => (
-            <AntDesign style={styles.icon} color="black" name="" size={25} />
+            <AntDesign
+              style={styles.icon}
+              color="black"
+              name="search1"
+              size={25}
+            />
           )}
         />
       </View>
@@ -314,6 +342,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         />
         {/* <Text style={styles.inlineLabel}>RR </Text> */}
         <InputBar
+          setDistace
           style={styles.bearingField}
           placeholder="000.00.00"
           dataType="number"
@@ -437,10 +466,7 @@ const styles = StyleSheet.create({
   distanceField: {
     alignSelf: "flex-start",
   },
-  inputField: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-  },
+
   desc: {
     flex: 1 / 5,
     // color: "black",
@@ -449,15 +475,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     alignItems: "center",
   },
-  inlineLabel: {
-    flex: 1 / 5,
-    color: "black",
-    fontFamily: "SSBold",
-    fontSize: 20,
-    alignSelf: "center",
-    alignItems: "center",
-    marginTop: -15,
-  },
+
   head: {
     color: colors.primaryColor,
     fontFamily: "SSBold",

@@ -15,6 +15,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Fontisto } from "@expo/vector-icons";
 import { colors } from "../colors";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { ReinputButton , } from "reinput";
 const InfoFormScreen = ({ route, navigation }) => {
   const [name, setName] = useState("");
@@ -41,6 +42,14 @@ const InfoFormScreen = ({ route, navigation }) => {
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
+  };
+  const storeData = async (key, value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      // saving error
+    }
   };
   return (
     <View style={styles.container}>
@@ -107,6 +116,11 @@ const InfoFormScreen = ({ route, navigation }) => {
         text="Next"
         width={370}
         onclick={() => {
+          storeData("user_info", {
+            name: name,
+            location: location,
+            date: date,
+          });
           console.log([name, location, date]);
           navigation.navigate("refStation");
         }}
@@ -129,14 +143,15 @@ const styles = StyleSheet.create({
     fontSize: 40,
     alignSelf: "flex-start",
     padding: 10,
+    marginBottom: 50,
   },
   label: {
     color: colors.primaryColor,
     fontFamily: "SSBold",
     fontSize: 25,
     alignSelf: "flex-start",
-    paddingTop: 10,
-    paddingBottom: 10,
+    // paddingBottom: ,
+    paddingTop: 40,
   },
   inputContainer: {
     marginTop: 40,
@@ -150,8 +165,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     height: 50,
+    width: 285,
     // marginTop: 5,
-    marginLeft: 50,
+    marginLeft: 30,
     elevation: 5,
     color: "black",
   },

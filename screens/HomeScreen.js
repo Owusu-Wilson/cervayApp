@@ -1,24 +1,44 @@
 import { StyleSheet, Text, View, ImageBackground } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { colors } from "../colors";
 import CustomButton from "../components/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const image = require("../assets/landing.png");
 
 const HomeScreen = ({ route, navigation }) => {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (AsyncStorage.getAllKeys().length) {
+      setShow(true);
+    }
+  });
   return (
     <View style={styles.container}>
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         {/* <Text style={styles.head}>Inside</Text> */}
-        <CustomButton
-          style={styles.btn}
-          color={colors.primaryColor}
-          text={"Get Started"}
-          width={370}
-          onclick={() => {
-            navigation.navigate("HomeStack");
-          }}
-        />
+        <View style={styles.btnContainer}>
+          {!show && (
+            <CustomButton
+              // style={styles.btn}
+              color={colors.primaryColor}
+              text={"View Previous Works"}
+              width={370}
+              onclick={() => {
+                navigation.navigate("PreviousTraverse");
+              }}
+            />
+          )}
+          <CustomButton
+            style={styles.btn}
+            color={colors.primaryColor}
+            text={"Start New"}
+            width={370}
+            onclick={() => {
+              navigation.navigate("HomeStack");
+            }}
+          />
+        </View>
       </ImageBackground>
     </View>
   );
@@ -46,12 +66,11 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     // backgroundColor: "yellow",
-    // flex: 1,
-    flexDirection: "row-reverse",
-    // justifyContent: "flex-end",
-    // alignContent: "flex-end",
+    flex: 1 / 5,
+    marginHorizontal: 20,
+    top: "30%",
   },
   btn: {
-    marginTop: "150%",
+    // marginTop: "50%",
   },
 });

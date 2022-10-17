@@ -184,8 +184,8 @@ const Buttomtab = () => {
                 height: 50,
               }}
             >
-              <FontAwesome
-                name={focused ? "user-o" : "user"}
+              <Ionicons
+                name={focused ? "md-clipboard-outline" : "md-clipboard"}
                 size={25}
                 color={focused ? colors.primaryColor : "#888888"}
               />

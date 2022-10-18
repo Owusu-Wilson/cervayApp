@@ -56,7 +56,7 @@ export default function TraverseTableScreen({ route, navigation }) {
     ll1.push(element.bearings.LL1);
     // fromStations.push(element.desc_1);
     // toStations.push(element.desc_2);
-    includedAngles.push(element.mean);
+    includedAngles.push(toRadians(element.mean));
   });
   // stations.pop();
   // Seperating the stations into FROM and TO
@@ -75,6 +75,9 @@ export default function TraverseTableScreen({ route, navigation }) {
     fromStations.push(stations[index]);
     toStations.push(stations[index + 1]);
   }
+
+  // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
+  toStations.push(stations[0]);
   //  0, 1, 2,  3, 4....
   structuredData = fromStations.map((elem) => {
     var i = fromStations.indexOf(elem);

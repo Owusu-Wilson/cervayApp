@@ -286,33 +286,23 @@ export default function TraverseActionScreen({ route, navigation }) {
         primaryText="Compute Coordinates"
         secondaryText="Finish the adjustment computations"
         onPress={() => {
-          console.log(distances);
-          console.log(stations);
-          console.log(route.params);
+          // console.log(distances);
+          // console.log(stations);
+          // console.log(route.params);
+          console.log("LOGS FROM ACTION SCREEN");
+          console.log(`Computations`);
+          console.log(computations);
           navigation.navigate("Coordinates", {
             itemId: 87,
             tableData: route.params.tableData,
+            coordinates: route.params.coordinates,
+            bearings: route.params.bearings,
             computations: computations,
             otherParam: "anything you want here",
           });
         }}
       />
-      {/* <Card
-        icon="calculator"
-        onPress={handleContinue}
-        text="Continue To Adjustments"
-      /> */}
-      {/* <FloatingAction
-        color={colors.primaryColor}
-        overlayColor="rgba(240, 255, 255, 0.02)"
-        floatingIcon={<AntDesign name="back" size={24} color="white" />}
-        onPressMain={() => {
-          navigation.goBack();
-        }}
-        onPressItem={(name) => {
-          navigation.navigate(name);
-        }}
-      /> */}
+
       <StatusBar style="auto" />
     </View>
   );

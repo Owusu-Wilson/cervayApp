@@ -29,6 +29,7 @@ import {
   getAdjustedBearings,
   getCoordinates,
   getUnadjustedBearings,
+  sum,
 } from "../api/functions";
 
 import moment from "moment/moment";
@@ -94,6 +95,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     let unadjusted_bearings = [];
     let adjusted_bearings = [];
     let coordinates = [];
+
     for (let index = 0; index < traverseData.length; index++) {
       const element = traverseData[index];
       distances.push(element.distance);
@@ -114,11 +116,38 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       // Appending the included angle to its array
       included_angles.push((L + R) / 2);
     }
+
+    // var icl_angles = [
+    //   "161.41.18",
+    //   "245.15.53",
+    //   "279.13.24",
+    //   "197.37.48",
+    //   "227.35.7",
+    //   "271.51.16",
+    //   "56.45.20",
+    // ];
+
+    // var distance = [130.07, 72.32, 123.53, 82.36, 49.05, 93.4, 0];
+    // const referenceStation_angle2 = { x: 334151.61, y: 1197056.15 };
+    // const instrumentStation_angle2 = { x: 334250.45, y: 1197024.75 };
     unadjusted_bearings = getUnadjustedBearings(included_angles, alpha.theta);
+    let adjusted_bearingsObject = getAdjustedBearings(
+      alpha.theta,
+      beta.theta,
+      included_angles.length,
+      unadjusted_bearings
+    ); //an object {adj_angles, adjustments, misclose, }
+    adjusted_bearings = adjusted_bearingsObject.adj_angles;
+    coordinates = getCoordinates(
+      adjusted_bearings,
+      distances,
+      instrumentStation_angle
+    );
 
     return {
       distances: distances,
       included_angles: included_angles,
+      inc: icl_angles,
       unadjusted_bearings: unadjusted_bearings,
       adjusted_bearings: adjusted_bearings,
       coordinates: coordinates,
@@ -183,14 +212,22 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         "You have not entered any traverse sheets. You cannot continue with computations"
       );
     } else {
-      storeData();
+      // storeData();
+
       let computedArrays = doComputations();
       console.log(computedArrays);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
         tableData: traverseData,
-        // computations: doComputations(), //
-        computations: "i am data",
+        computations: computedArrays, //
+        // THE FORM OF THE ABOVE ELEMENT
+        // distances: distances,
+        // included_angles: included_angles,
+        // unadjusted_bearings: unadjusted_bearings,
+        // adjusted_bearings: adjusted_bearings,
+
+        coordinates: computedArrays.coordinates,
+        // computations: "i am data",
         // the above data is sent to the TravesreActionScreen to be parsed further to the Traverse Table
         // and Export screens.
       });

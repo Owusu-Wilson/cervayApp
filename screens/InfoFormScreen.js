@@ -78,6 +78,7 @@ const InfoFormScreen = ({ route, navigation }) => {
           {show && (
             <DateTimePicker
               testID="dateTimePicker"
+              style={styles.datePicker}
               value={date}
               mode={mode}
               is24Hour={true}
@@ -171,6 +172,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     color: "black",
   },
+  datePicker: { color: colors.primaryColor },
   input: {
     backgroundColor: "white",
     paddingHorizontal: 15,

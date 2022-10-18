@@ -1,3 +1,16 @@
+/**
+ * Finds the sum of an array
+ * @param {*} arr
+ * @returns
+ */
+function sum(arr) {
+  let sumVal = 0;
+  arr.forEach((element) => {
+    sumVal += element;
+  });
+  return sumVal;
+}
+
 // Converts from degrees to radians.
 function toRadians(degrees) {
   return (degrees * Math.PI) / 180;
@@ -161,14 +174,14 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
   let corrections_x = [];
   let corrections_y = [];
   let coordinates = [];
-  for (let index = 0; index < adj.adj_angles.length; index++) {
+  for (let index = 0; index < adjusted_bearings.length; index++) {
     lat_i.push(
-      distance[index] * Math.cos(toRadians(adj.adj_angles[index + 1]))
+      distance[index] * Math.cos(toRadians(adjusted_bearings[index + 1]))
     );
   }
-  for (let index = 0; index < adj.adj_angles.length; index++) {
+  for (let index = 0; index < adjusted_bearings.length; index++) {
     dep_i.push(
-      distance[index] * Math.sin(toRadians(adj.adj_angles[index + 1]))
+      distance[index] * Math.sin(toRadians(adjusted_bearings[index + 1]))
     );
   }
   //  after computing for the arrays above, there is NaN, 0 and -0 included
@@ -271,6 +284,7 @@ export {
   getAdjustedBearings,
   getCoordinates,
   getUnadjustedBearings,
+  sum,
 };
 
 function sanitizer(arr) {

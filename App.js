@@ -27,9 +27,7 @@ export default function App() {
     try {
       const value = await AsyncStorage.getItem("user_details");
       if (value !== null) {
-        // value previously stored
-        console.log(value.name);
-        alert(value.name);
+        return value;
       }
     } catch (e) {
       // error reading value
@@ -55,7 +53,7 @@ export default function App() {
           SSRegular: require("./assets/fonts/SourceSansPro/SourceSansProRegular.ttf"),
           SSBold: require("./assets/fonts/SourceSansPro/SourceSansProBold.ttf"),
         }).then(() => {
-          getData();
+          console.log(getData());
         });
         // Initializing the database file i.e creating it if it doesnt exist
 

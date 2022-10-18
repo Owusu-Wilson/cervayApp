@@ -151,6 +151,7 @@ const Buttomtab = () => {
         name="Export"
         component={ExportScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View
               style={{
@@ -181,6 +182,7 @@ const Buttomtab = () => {
         name="Report"
         component={ProfileScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View
               style={{

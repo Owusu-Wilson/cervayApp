@@ -24,9 +24,18 @@ import { FloatingAction } from "react-native-floating-action";
 
 import { colors } from "../colors";
 import { degrees_to_dms } from "../api/computations";
-import { formatBearing } from "../api/functions";
+import { formatBearing, sum } from "../api/functions";
+
 export default function CoordinatesTableScreen({ route, navigation }) {
-  const { tableData, computations } = route.params;
+  const { tableData, coordinates, computations, bearings } = route.params;
+
+  let coordinates_x = [];
+  let coordinates_y = [];
+
+  coordinates.coordinates.forEach((element) => {
+    coordinates_x.push(element.x);
+    coordinates_y.push(element.y);
+  });
   const tData = [
     ["1", "2", "3"],
     ["a", "b", "c"],
@@ -35,12 +44,13 @@ export default function CoordinatesTableScreen({ route, navigation }) {
   ];
   const tableHead = ["To", "Coordinate X", "Coordinate Y"];
 
-  const bearings = [];
+  // const bearings = [];
   // var stations = [];
   const distance = [];
   var fromStations = [];
-  var coordinates = [];
   var toStations = [];
+  var stations = [];
+  var inc = computations.inc;
   /**
    * This data array helps  put all the necessary data to be outputted in the right form.
    */
@@ -48,37 +58,59 @@ export default function CoordinatesTableScreen({ route, navigation }) {
   const includedAngles = [];
 
   tableData.forEach((element) => {
-    bearings.push(element.bearings);
+    stations.push(element.traverseStation);
+    // bearings.push(element.bearings);
     distance.push(element.distance);
-    fromStations.push(element.desc_1);
-    toStations.push(element.desc_2);
+
     includedAngles.push(element.mean);
-    coordinates.push(element.distance); //change this to coordinates
+    // coordinates.push(element.distance); //change this to coordinates
   });
-  // structuredData = toStations.map((elem) => {
-  //   var i = fromStations.indexOf(elem);
-  //   return [elem, coordinates[i].x, coordinates[i].y];
-  // });
+
+  for (let index = 0; index < stations.length; index++) {
+    // const element = stations[index];
+    fromStations.push(stations[index]);
+    toStations.push(stations[index + 1]);
+  }
+  toStations.pop();
+  // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
+  toStations.push(stations[0]);
+  for (let index = 0; index < toStations.length; index++) {
+    structuredData.push([
+      toStations[index],
+      coordinates_x[index],
+      coordinates_y[index],
+    ]);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.topText}>Final Coordinates</Text>
-      <Text style={styles.topText}>{computations}</Text>
+      <Text style={styles.value}>Instrument Station:</Text>
+      <Text style={styles.value}>X: {bearings.instrument_station.x}</Text>
+      <Text style={styles.value}>Y: {bearings.instrument_station.y}</Text>
       <View style={styles.tableContainer}>
         <Table borderStyle={styles.table}>
           <Row data={tableHead} style={styles.head} textStyle={styles.head} />
 
-          {/* <Rows data={structuredData} textStyle={styles.text} /> */}
+          <Rows data={structuredData} textStyle={styles.text} />
         </Table>
       </View>
-      {/* <CustomButton
-        color={colors.primaryColor}
-        text={"Done"}
-        width={370}
-        onclick={() => {
-          // console.log(stations.length, fromStations, toStations);
-        }}
-      />
-      <FloatingAction
+      <View style={styles.btnContainer}>
+        <CustomButton
+          color={colors.primaryColor}
+          text={"Done"}
+          width={370}
+          onclick={() => {
+            console.log("COORDINATES");
+            console.log("================================");
+            console.log([coordinates_x, coordinates_y]);
+            console.log("STATIONS");
+            console.log(toStations);
+            // console.log(computations.coordinates.coordinates);
+          }}
+        />
+      </View>
+      {/*<FloatingAction
         color={colors.primaryColor}
         overlayColor="rgba(240, 255, 255, 0.02)"
         floatingIcon={<AntDesign name="back" size={24} color="white" />}
@@ -136,9 +168,22 @@ const styles = StyleSheet.create({
     fontFamily: "SSBold",
     fontWeight: "700",
     color: colors.primaryColor,
-    marginBottom: 30,
+    marginBottom: 20,
+
+    padding: 5,
+  },
+  value: {
+    fontSize: 20,
+    fontFamily: "SSRegular",
+    color: colors.hue,
 
     padding: 5,
   },
   table: { borderWidth: 2, borderColor: colors.primaryColor },
+  btnContainer: {
+    // backgroundColor: "yellow",
+    flex: 1 / 5,
+    marginHorizontal: 20,
+    top: "40%",
+  },
 });

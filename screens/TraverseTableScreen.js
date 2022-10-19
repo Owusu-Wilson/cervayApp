@@ -23,72 +23,55 @@ import { CustomButton } from "../components/CustomButton";
 import { FloatingAction } from "react-native-floating-action";
 
 import { colors } from "../colors";
-import { degrees_to_dms, toRadians } from "../api/computations";
-import { formatBearing, toDegrees } from "../api/functions";
+// import { degrees_to_dms, toRadians } from "../api/computations";
+import {
+  formatBearing,
+  toDegrees,
+  toRadians,
+  degrees_to_dms,
+} from "../api/functions";
 export default function TraverseTableScreen({ route, navigation }) {
-  const { itemId, tableData, computations } = route.params;
+  const {
+    from_stations,
+    to_stations,
+    bearings,
+    tableData,
+    coordinates,
+    unadjusted_bearings,
+    adjusted_bearings,
+    included_angles,
+    distances,
+  } = route.params;
   const tableHead = ["From", "To", "Angle", "Distance"];
 
   useEffect(() => {
-    console.log(computations);
+    console.log(from_stations);
   });
-  const bearings = [];
-  var stations = [];
-  const distance = [];
-  var fromStations = [];
-  let ll1 = [];
 
-  var toStations = [];
+  /**
+   *
+   * @param {Array<String>} dms_array
+   */
+  function formatDMS(dms_array) {
+    var str = `${dms_array[0]}°${dms_array[1]}’${dms_array[2]}”`;
+    return str;
+  }
   /**
    * This data array helps  put all the necessary data to be outputted in the right form.
    */
   var structuredData = []; //a 2D array
-  const includedAngles = [];
-  const includedAngles2 = [];
 
-  // computations.forEach((element) => {
-  //   includedAngles2.push(element.included_angles);
-  // });
-  tableData.forEach((element) => {
-    stations.push(element.traverseStation);
-    bearings.push(element.bearings);
-    distance.push(element.distance);
-    ll1.push(element.bearings.LL1);
-    // fromStations.push(element.desc_1);
-    // toStations.push(element.desc_2);
-    includedAngles.push(toRadians(element.mean));
-  });
-  // stations.pop();
-  // Seperating the stations into FROM and TO
-  // toStations = stations.filter((elem) => {
-  //   if (stations.indexOf(elem) % 2 != 0) {
-  //     return elem;
-  //   }
-  // });
-  // fromStations = stations.filter((elem) => {
-  //   if (stations.indexOf(elem) % 2 == 0) {
-  //     return elem;
-  //   }
-  // });
-  for (let index = 0; index < stations.length; index++) {
-    // const element = stations[index];
-    fromStations.push(stations[index]);
-    toStations.push(stations[index + 1]);
+  for (let index = 0; index < to_stations.length; index++) {
+    structuredData.push([
+      from_stations[index],
+      to_stations[index],
+      formatDMS(degrees_to_dms(included_angles[index])),
+      distances[index],
+    ]);
   }
 
-  // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
-  toStations.push(stations[0]);
-  //  0, 1, 2,  3, 4....
-  structuredData = fromStations.map((elem) => {
-    var i = fromStations.indexOf(elem);
-    return [elem, toStations[i], includedAngles[i], distance[i]];
-  });
-  // for (let index = 0; index < stations.length; index++) {
-  //   fromStations.push(stations[index]);
-  //   toStations.push(stations[index + 1]);
-  //   // if (stations[index + 1]) toStations.push(stations[index + 1]);
-  // }
-  var heights = fromStations.map((elem) => {
+  // =============================
+  var heights = from_stations.map((elem) => {
     return 30;
   });
 
@@ -100,7 +83,11 @@ export default function TraverseTableScreen({ route, navigation }) {
         <Table borderStyle={styles.table}>
           <Row data={tableHead} style={styles.head} textStyle={styles.head} />
 
-          <Rows data={structuredData} textStyle={styles.text} />
+          <Rows
+            data={structuredData}
+            textStyle={styles.text}
+            // heightArr={heights}
+          />
         </Table>
       </View>
       {/* <CustomButton

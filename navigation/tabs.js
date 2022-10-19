@@ -25,7 +25,7 @@ import NextOpenTraverseScreen from "../screens/NextOpenTraverseScreen";
 import TraverseTableScreen from "../screens/TraverseTableScreen";
 import TempTraverseScreen from "../screens/TempTraverseScreen";
 import InfoFormScreen from "../screens/InfoFormScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import ReportScreen from "../screens/ReportScreen";
 import CoordinatesTableScreen from "../screens/CoordinatesTableScreen";
 // ============================================
 const Stack = createNativeStackNavigator();
@@ -180,7 +180,7 @@ const Buttomtab = () => {
       />
       <Tab.Screen
         name="Report"
-        component={ProfileScreen}
+        component={ReportScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

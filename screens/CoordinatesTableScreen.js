@@ -27,12 +27,21 @@ import { degrees_to_dms } from "../api/computations";
 import { formatBearing, sum } from "../api/functions";
 
 export default function CoordinatesTableScreen({ route, navigation }) {
-  const { tableData, coordinates, computations, bearings } = route.params;
+  const {
+    from_stations,
+    to_stations,
+    bearings,
+    tableData,
+    coordinates,
+    unadjusted_bearings,
+    adjusted_bearings,
+    included_angles,
+  } = route.params;
 
   let coordinates_x = [];
   let coordinates_y = [];
 
-  coordinates.coordinates.forEach((element) => {
+  coordinates.forEach((element) => {
     coordinates_x.push(element.x);
     coordinates_y.push(element.y);
   });
@@ -44,39 +53,14 @@ export default function CoordinatesTableScreen({ route, navigation }) {
   ];
   const tableHead = ["To", "Coordinate X", "Coordinate Y"];
 
-  // const bearings = [];
-  // var stations = [];
-  const distance = [];
-  var fromStations = [];
-  var toStations = [];
-  var stations = [];
-  var inc = computations.inc;
   /**
    * This data array helps  put all the necessary data to be outputted in the right form.
    */
   var structuredData = []; //a 2D array
-  const includedAngles = [];
 
-  tableData.forEach((element) => {
-    stations.push(element.traverseStation);
-    // bearings.push(element.bearings);
-    distance.push(element.distance);
-
-    includedAngles.push(element.mean);
-    // coordinates.push(element.distance); //change this to coordinates
-  });
-
-  for (let index = 0; index < stations.length; index++) {
-    // const element = stations[index];
-    fromStations.push(stations[index]);
-    toStations.push(stations[index + 1]);
-  }
-  toStations.pop();
-  // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
-  toStations.push(stations[0]);
-  for (let index = 0; index < toStations.length; index++) {
+  for (let index = 0; index < to_stations.length; index++) {
     structuredData.push([
-      toStations[index],
+      to_stations[index],
       coordinates_x[index],
       coordinates_y[index],
     ]);

@@ -4,7 +4,7 @@ import { colors } from "../colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../components/CustomButton";
 import { FontAwesome } from "@expo/vector-icons";
-const ProfileScreen = () => {
+const ReportScreen = () => {
   const [data, setData] = useState("");
 
   const getData = async () => {
@@ -57,7 +57,7 @@ const ProfileScreen = () => {
   );
 };
 
-export default ProfileScreen;
+export default ReportScreen;
 
 const styles = StyleSheet.create({
   container: {

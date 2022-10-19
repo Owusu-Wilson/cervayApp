@@ -81,7 +81,7 @@ function Pol(x, y) {
  */
 function getUnadjustedBearings(includedAngles, bearing) {
   let unadj_angles = [];
-  let a = dms_to_degrees(includedAngles[0]) + bearing;
+  let a = includedAngles[0] + bearing;
   if (a < 180) {
     a = a + 180;
   } else if (a > 180) {
@@ -96,7 +96,7 @@ function getUnadjustedBearings(includedAngles, bearing) {
   let temp = 0;
   for (let index = 1; index < includedAngles.length; index++) {
     const element = includedAngles[index];
-    temp = dms_to_degrees(element) + unadj_angles[index - 1];
+    temp = element + unadj_angles[index - 1];
 
     if (temp < 180) {
       temp = temp + 180;
@@ -195,7 +195,7 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
     corrections_y.push((-sum(dep_i) / sum(distance)) * distance[index]);
   }
   coordinates[0] = { x: instrumentStation.x, y: instrumentStation.y };
-  coordinates[adjusted_bearings.length] = {
+  coordinates[distance.length] = {
     x: instrumentStation.x,
     y: instrumentStation.y,
   };
@@ -205,7 +205,7 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
   // };
 
   // getting thte coordinates from positions 1 to n-1
-  for (let index = 0; index < distance.length - 2; index++) {
+  for (let index = 0; index < distance.length; index++) {
     coordinates[index + 1] = {
       x:
         coordinates[index].x +

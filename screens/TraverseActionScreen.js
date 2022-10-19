@@ -25,7 +25,6 @@ import {
   formatBearing,
   degrees_to_dms,
   dms_to_degrees,
-  bearing,
   toDegrees,
   toRadians,
   getAdjustedBearings,
@@ -34,7 +33,17 @@ import {
 } from "../api/functions";
 
 export default function TraverseActionScreen({ route, navigation }) {
-  const { computations } = route.params;
+  const {
+    from_stations,
+    to_stations,
+    bearings,
+    tableData,
+    coordinates,
+    unadjusted_bearings,
+    adjusted_bearings,
+    included_angles,
+    distances,
+  } = route.params;
 
   // const exportDataToExcel = () => {
   //   // Created Sample data
@@ -61,35 +70,6 @@ export default function TraverseActionScreen({ route, navigation }) {
   //       console.log("Error", e);
   //     });
   // };
-
-  let stations = [];
-
-  route.params.tableData.forEach((element) => {
-    stations.push(element.traverseStation);
-  });
-
-  function handleContinue() {
-    Alert.alert(
-      "Select Traverse Type",
-      "What type of traverse (Open or Close)",
-      [
-        {
-          text: "Open Traverse",
-          onPress: () => {
-            console.log("Open traverse Pressed");
-            navigation.navigate("OpenTraverse");
-          },
-        },
-        {
-          text: "Close Traverse",
-          onPress: () => {
-            console.log("Close traverse pressed");
-            navigation.navigate("CloseTraverse");
-          },
-        },
-      ]
-    );
-  }
 
   const handleClick = async () => {
     try {
@@ -200,55 +180,6 @@ export default function TraverseActionScreen({ route, navigation }) {
       Sharing.shareAsync(filename);
     });
   };
-  /**
-   * data to be used for computations. Received from the previous route.
-   * @type Object
-   */
-  const rawData = route.params.tableData;
-  const instrumentStation_angle = route.params.bearings.instrument_station;
-  const referenceStation_angle = route.params.bearings.reference_station;
-
-  const x = instrumentStation_angle.x - referenceStation_angle.x;
-  const y = instrumentStation_angle.y - referenceStation_angle.y;
-
-  const x2 = referenceStation_angle.x - instrumentStation_angle.x;
-  const y2 = referenceStation_angle.y - instrumentStation_angle.y;
-  let alpha = Pol(x, y);
-  let beta = Pol(x2, y2);
-  let num_traverses = rawData.length;
-  let included_angles = [];
-  let distances = [];
-  let unadjusted_bearings = [];
-  let adjusted_bearings = [];
-  let coordinates = [];
-  for (let index = 0; index < rawData.length; index++) {
-    const element = rawData[index];
-    distances.push(element.distance);
-    let L =
-      dms_to_degrees(element.bearings.LL2) -
-      dms_to_degrees(element.bearings.LL1);
-    let R =
-      dms_to_degrees(element.bearings.RR2) -
-      dms_to_degrees(element.bearings.RR1);
-
-    // Applying conditions to the differences to calculate the included angle
-    if (L < 0) {
-      L += 360;
-    }
-    if (R < 0) {
-      R += 360;
-    }
-    // Appending the included angle to its array
-    included_angles.push((L + R) / 2);
-  }
-  // unadjusted_bearings = getUnadjustedBearings(included_angles, alpha.theta);
-  // adjusted_bearings = getAdjustedBearings(
-  //   alpha.theta,
-  //   beta.theta,
-  //   num_traverses,
-  //   unadjusted_bearings
-  // );
-  // coordinates = getCoordinates(adjusted_bearings, )
 
   return (
     <View style={styles.container}>
@@ -262,13 +193,23 @@ export default function TraverseActionScreen({ route, navigation }) {
         primaryText="View Traverse Data"
         secondaryText="Select to view traverse data collected"
         onPress={() => {
-          console.log(num_traverses);
-          console.log(alpha);
-          navigation.navigate("TraverseTable", {
-            itemId: 86,
-            tableData: route.params.tableData,
-            otherParam: "anything you want here",
-          });
+          navigation.navigate(
+            "TraverseTable",
+            /**
+             * object sent to the next scren in the route
+             */
+            {
+              bearings: bearings,
+              from_stations: from_stations,
+              to_stations: to_stations,
+              tableData: tableData,
+              coordinates: coordinates,
+              unadjusted_bearings: unadjusted_bearings,
+              adjusted_bearings: adjusted_bearings,
+              included_angles: included_angles,
+              distances: distances,
+            }
+          );
         }}
       />
       <LargeButton
@@ -286,20 +227,23 @@ export default function TraverseActionScreen({ route, navigation }) {
         primaryText="Compute Coordinates"
         secondaryText="Finish the adjustment computations"
         onPress={() => {
-          // console.log(distances);
-          // console.log(stations);
-          // console.log(route.params);
-          console.log("LOGS FROM ACTION SCREEN");
-          console.log(`Computations`);
-          console.log(computations);
-          navigation.navigate("Coordinates", {
-            itemId: 87,
-            tableData: route.params.tableData,
-            coordinates: route.params.coordinates,
-            bearings: route.params.bearings,
-            computations: computations,
-            otherParam: "anything you want here",
-          });
+          navigation.navigate(
+            "Coordinates",
+            /**
+             * object sent to the next scren in the route
+             */
+            {
+              bearings: bearings,
+              from_stations: from_stations,
+              to_stations: to_stations,
+              tableData: tableData,
+              coordinates: coordinates,
+              unadjusted_bearings: unadjusted_bearings,
+              adjusted_bearings: adjusted_bearings,
+              included_angles: included_angles,
+              distances: distances,
+            }
+          );
         }}
       />
 

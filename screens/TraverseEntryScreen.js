@@ -79,8 +79,11 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    */
 
   function doComputations() {
-    const instrumentStation_angle = bearings.instrument_station;
-    const referenceStation_angle = bearings.reference_station;
+    // const instrumentStation_angle = bearings.instrument_station;
+    // const referenceStation_angle = bearings.reference_station;
+    // test data
+    const referenceStation_angle = { x: 334151.61, y: 1197056.15 };
+    const instrumentStation_angle = { x: 334250.45, y: 1197024.75 };
 
     const x = instrumentStation_angle.x - referenceStation_angle.x;
     const y = instrumentStation_angle.y - referenceStation_angle.y;
@@ -103,8 +106,8 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         dms_to_degrees(element.bearings.LL2) -
         dms_to_degrees(element.bearings.LL1);
       let R =
-        dms_to_degrees(element.bearings.RR2) -
-        dms_to_degrees(element.bearings.RR1);
+        dms_to_degrees(element.bearings.RR1) -
+        dms_to_degrees(element.bearings.RR2);
 
       // Applying conditions to the differences to calculate the included angle
       if (L < 0) {
@@ -117,19 +120,13 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       included_angles.push((L + R) / 2);
     }
 
-    // var icl_angles = [
-    //   "161.41.18",
-    //   "245.15.53",
-    //   "279.13.24",
-    //   "197.37.48",
-    //   "227.35.7",
-    //   "271.51.16",
-    //   "56.45.20",
+    // // test data
+    // included_angles = [
+    //   161.68833333333333, 245.26472222222222, 279.2233333333333, 197.63,
+    //   227.58527777777778, 271.8544444444445, 56.75555555555555,
     // ];
+    // distances = [130.07, 72.32, 123.53, 82.36, 49.05, 93.4];
 
-    // var distance = [130.07, 72.32, 123.53, 82.36, 49.05, 93.4, 0];
-    // const referenceStation_angle2 = { x: 334151.61, y: 1197056.15 };
-    // const instrumentStation_angle2 = { x: 334250.45, y: 1197024.75 };
     unadjusted_bearings = getUnadjustedBearings(included_angles, alpha.theta);
     let adjusted_bearingsObject = getAdjustedBearings(
       alpha.theta,
@@ -145,9 +142,11 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     );
 
     return {
+      alpha: alpha,
+      beta: beta,
       distances: distances,
       included_angles: included_angles,
-      inc: icl_angles,
+
       unadjusted_bearings: unadjusted_bearings,
       adjusted_bearings: adjusted_bearings,
       coordinates: coordinates,
@@ -212,24 +211,57 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         "You have not entered any traverse sheets. You cannot continue with computations"
       );
     } else {
+      var stations = [];
+      var fromStations = [];
+      var toStations = [];
+
+      traverseData.forEach((element) => {
+        stations.push(element.traverseStation);
+      });
+
+      for (let index = 0; index < stations.length; index++) {
+        // const element = stations[index];
+        fromStations.push(stations[index]);
+        toStations.push(stations[index + 1]);
+      }
+
+      // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
+      toStations.push(stations[0]);
+      // test data
+      // fromStations = "a.b.c.d.e.f".split(".");
+      // toStations = "b.c.d.e.f.g".split(".");
       // storeData();
+      // DEVELOPMENT LOGS
+      console.log("computations");
+      console.log(Object.keys(doComputations()));
+      // console.log(traverseData);
+      console.log("LENGTH");
+      console.log(traverseData.length);
+      console.log("Bearings");
+      console.log(bearings);
+
+      console.log("Alpha");
+      console.log(doComputations().alpha);
+
+      console.log("Beta");
+      console.log(doComputations().beta);
+
+      console.log("Coordinates");
+      console.log(doComputations().coordinates.coordinates);
+      console.log("======================================");
 
       let computedArrays = doComputations();
-      console.log(computedArrays);
+      // console.log(computedArrays);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
         tableData: traverseData,
-        computations: computedArrays, //
-        // THE FORM OF THE ABOVE ELEMENT
-        // distances: distances,
-        // included_angles: included_angles,
-        // unadjusted_bearings: unadjusted_bearings,
-        // adjusted_bearings: adjusted_bearings,
-
-        coordinates: computedArrays.coordinates,
-        // computations: "i am data",
-        // the above data is sent to the TravesreActionScreen to be parsed further to the Traverse Table
-        // and Export screens.
+        coordinates: computedArrays.coordinates.coordinates,
+        unadjusted_bearings: computedArrays.unadjusted_bearings,
+        adjusted_bearings: computedArrays.adjusted_bearings,
+        to_stations: toStations,
+        from_stations: fromStations,
+        included_angles: computedArrays.included_angles,
+        distances: computedArrays.distances,
       });
     }
   }

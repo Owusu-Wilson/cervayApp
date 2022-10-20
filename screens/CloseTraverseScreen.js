@@ -7,11 +7,11 @@ import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
 
 const CloseTraverseScreen = ({ navigation }) => {
-  const [initialX1, setInitialX1] = useState("");
-  const [initialY1, setInitialY1] = useState("");
+  const [refStation_x, setRefStation_x] = useState("");
+  const [refStation_y, setRefStation_y] = useState("");
 
-  const [initialX2, setInitialX2] = useState("");
-  const [initialY2, setInitialY2] = useState("");
+  const [instrumentStation_x, setInstrumentStation_x] = useState("");
+  const [instrumentStation_y, setInstrumentStation_y] = useState("");
 
   return (
     <View style={styles.container}>
@@ -24,13 +24,13 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={initialX1}
+          value={refStation_x}
           dataType="number"
           maxLength={14}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
               ///^\d+$/
-              setInitialX1(text);
+              setRefStation_x(text);
             } else {
               alert("Only numbers are allowed");
             }
@@ -42,13 +42,13 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={initialY1}
+          value={refStation_y}
           dataType="number"
           maxLength={14}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
               ///^\d+$/
-              setInitialY1(text);
+              setRefStation_y(text);
             } else {
               alert("Only numbers are allowed");
             }
@@ -63,13 +63,13 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={initialX2}
+          value={instrumentStation_x}
           dataType="number"
           maxLength={14}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
               ///^\d+$/
-              setInitialX2(text);
+              setInstrumentStation_x(text);
             } else {
               alert("Only numbers are allowed");
             }
@@ -81,13 +81,13 @@ const CloseTraverseScreen = ({ navigation }) => {
 
         <InputBar
           placeholder="00000.000"
-          value={initialY2}
+          value={instrumentStation_y}
           dataType="number"
           maxLength={14}
           onChangeText={(text) => {
             if (/[0-9.]/.test(text) || text === "") {
               ///^\d+$/
-              setInitialY2(text);
+              setInstrumentStation_y(text);
             } else {
               alert("Only numbers are allowed");
             }
@@ -113,10 +113,10 @@ const CloseTraverseScreen = ({ navigation }) => {
         width={370}
         onclick={() => {
           if (
-            Number(initialX1) > 100000000 ||
-            Number(initialX2) > 100000000 ||
-            Number(initialY1) > 100000000 ||
-            Number(initialY2) > 100000000
+            Number(refStation_x) > 100000000 ||
+            Number(instrumentStation_x) > 100000000 ||
+            Number(refStation_y) > 100000000 ||
+            Number(instrumentStation_y) > 100000000
           ) {
             Alert.alert(
               "Wrong Input",
@@ -125,8 +125,8 @@ const CloseTraverseScreen = ({ navigation }) => {
           } else {
             navigation.navigate("TraverseEntry", {
               bearings: {
-                reference_station: { x: initialX1, y: initialX2 },
-                instrument_station: { x: initialY1, y: initialY2 },
+                reference_station: { x: refStation_x, y: refStation_y },
+                instrument_station: { x: instrumentStation_x, y: instrumentStation_y },
               },
             });
           }

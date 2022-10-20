@@ -79,11 +79,11 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    */
 
   function doComputations() {
-    // const instrumentStation_angle = bearings.instrument_station;
-    // const referenceStation_angle = bearings.reference_station;
+    const instrumentStation_angle = bearings.instrument_station;
+    const referenceStation_angle = bearings.reference_station;
     // test data
-    const referenceStation_angle = { x: 334151.61, y: 1197056.15 };
-    const instrumentStation_angle = { x: 334250.45, y: 1197024.75 };
+    // const referenceStation_angle = { x: 334151.61, y: 1197056.15 };
+    // const instrumentStation_angle = { x: 334250.45, y: 1197024.75 };
 
     const x = instrumentStation_angle.x - referenceStation_angle.x;
     const y = instrumentStation_angle.y - referenceStation_angle.y;
@@ -224,7 +224,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         fromStations.push(stations[index]);
         toStations.push(stations[index + 1]);
       }
-
+      toStations.pop();
       // ADDING THE FIRST  STATION TO THE TO_STATIONS SINCE IT IS A CLOSED TRAVERSE
       toStations.push(stations[0]);
       // test data
@@ -233,6 +233,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       // storeData();
       // DEVELOPMENT LOGS
       console.log("computations");
+      console.log(doComputations());
       console.log(Object.keys(doComputations()));
       // console.log(traverseData);
       console.log("LENGTH");

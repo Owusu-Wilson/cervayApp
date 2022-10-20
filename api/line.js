@@ -47,8 +47,8 @@ function Pol(x, y) {
 
 function formatBearing(bearing) {
   var bearingText = "";
-  bearing = String(bearing);
-  bearing = bearing.split(".");
+  // bearing = String(bearing);
+  // bearing = bearing.split(".");
   bearing[0] += "°";
   bearing[1] += "’";
   bearing[2] += "”";
@@ -57,6 +57,26 @@ function formatBearing(bearing) {
     bearingText += bearing[index];
   }
   return bearingText;
+}
+
+function getIncludedAngles(dataArray) {
+  var inc_angles = [];
+  for (let index = 0; index < dataArray.length; index++) {
+    const element = dataArray[index];
+    let L = dms_to_degrees(element[1]) - dms_to_degrees(element[0]);
+    let R = dms_to_degrees(element[2]) - dms_to_degrees(element[3]);
+
+    // Applying conditions to the differences to calculate the included angle
+    if (L < 0) {
+      L += 360;
+    }
+    if (R < 0) {
+      R += 360;
+    }
+    // Appending the included angle to its array
+    inc_angles.push((L + R) / 2);
+  }
+  return inc_angles;
 }
 
 // ======================================================
@@ -83,7 +103,7 @@ function degrees_to_dms(degrees_value) {
   degrees_value = Number(degrees_value);
   let d = Math.trunc(degrees_value);
   let m = Math.trunc((degrees_value - d) * 60);
-  let s = Math.trunc((degrees_value - d - m / 60) * 3600);
+  let s = (degrees_value - d - m / 60) * 3600;
 
   return [d, m, s];
 }
@@ -437,3 +457,26 @@ console.log(distance);
 let coors = getCoordinates2(adj.adj_angles, distance, instrumentStation_angle);
 
 console.log(coors);
+
+// =======================================
+// RAW DATA
+//
+var raw = [
+  ["41.56.14", "203.38.10", "23.37.24", "221.56.45"],
+  ["45.01.30", "290.17.28", "110.16.42", "225.00.44"],
+  ["21.36.17", "300.49.2", "120.48.00", "201.33.57"],
+  ["244.24.38", "81.56.16", "261.54.19", "64.22.32"],
+  ["130.04.51", "357.40.00", "177.39.40", "310.04.35"],
+  ["333.24.04", "245.14.50", "65.15.09", "153.13.37"],
+  ["274.11.51", "330.57.12", "150.57.35", "94.9.30"],
+];
+
+var angles = getIncludedAngles(raw);
+var formattedAngles_arr = [];
+var formattedAngles_str = [];
+
+for (let index = 0; index < angles.length; index++) {
+  const element = angles[index];
+  formattedAngles_arr.push(degrees_to_dms(element));
+  formattedAngles_str.push(formatBearing(degrees_to_dms(element)));
+}

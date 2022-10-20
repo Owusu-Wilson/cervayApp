@@ -89,7 +89,7 @@ export default function CoordinatesTableScreen({ route, navigation }) {
             console.log("================================");
             console.log([coordinates_x, coordinates_y]);
             console.log("STATIONS");
-            console.log(toStations);
+            console.log(to_stations);
             // console.log(computations.coordinates.coordinates);
           }}
         />

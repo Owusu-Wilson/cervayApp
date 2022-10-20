@@ -194,10 +194,13 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
     corrections_x.push((-sum(lat_i) / sum(distance)) * distance[index]);
     corrections_y.push((-sum(dep_i) / sum(distance)) * distance[index]);
   }
-  coordinates[0] = { x: instrumentStation.x, y: instrumentStation.y };
+  coordinates[0] = {
+    x: Number(instrumentStation.x),
+    y: Number(instrumentStation.y),
+  };
   coordinates[distance.length] = {
-    x: instrumentStation.x,
-    y: instrumentStation.y,
+    x: Number(instrumentStation.x),
+    y: Number(instrumentStation.y),
   };
   // coordinates[1] = {
   //   x: instrumentStation.x + lat_i[0],

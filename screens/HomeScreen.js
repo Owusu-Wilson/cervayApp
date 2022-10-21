@@ -32,7 +32,7 @@ const HomeScreen = ({ route, navigation }) => {
           <CustomButton
             style={styles.btn}
             color={colors.primaryColor}
-            text={"Start New"}
+            text={"Start New Traverse"}
             width={370}
             onclick={() => {
               navigation.navigate("HomeStack");

@@ -12,6 +12,7 @@ import { Card } from "../components/Card";
 import { FloatingAction } from "react-native-floating-action";
 import { AntDesign } from "@expo/vector-icons";
 import LargeButton from "../components/LargeButton";
+import { generateExcel } from "../api/handleExport";
 
 import { StatusBar } from "expo-status-bar";
 
@@ -44,7 +45,22 @@ export default function TraverseActionScreen({ route, navigation }) {
     included_angles,
     distances,
   } = route.params;
+  let coordinates_x = [];
+  let coordinates_y = [];
 
+  coordinates.forEach((element) => {
+    coordinates_x.push(element.x);
+    coordinates_y.push(element.y);
+  });
+  var structuredData = []; //a 2D array
+structuredData[0]  = ["To Stations", "Coordinates X","Coordinates Y"]
+  for (let index = 0; index < to_stations.length; index++) {
+    structuredData.push([
+      to_stations[index],
+      coordinates_x[index],
+      coordinates_y[index],
+    ]);
+  }
   // const exportDataToExcel = () => {
   //   // Created Sample data
   //   let sample_data_to_export = [
@@ -108,78 +124,7 @@ export default function TraverseActionScreen({ route, navigation }) {
       return;
     }
   };
-  // const onShare = async () => {
-  //   // console.log(data);
-  //   // var appDir = FileSystem.documentDirectory;
-  //   // const fileUri = `${appDir}${"myimg.jpg"}`;
-  //   // const uri = "https://unsplash.com/photos/ZkrxPVoYoCw";
-  //   // const downloadedFile = await FileSystem.downloadAsync(uri, fileUri);
 
-  //   // if (downloadedFile.status != 200) {
-  //   //   console.log("error");
-  //   // }
-
-  //   try {
-  //     const result = await Share.share({
-  //       message:
-  //         "React Native | A framework for building native apps using React",
-  //       title: "Export",
-  //       url: "*.txt",
-  //     });
-  //     if (result.action === Share.sharedAction) {
-  //       if (result.activityType) {
-  //         // shared with activity type of result.activityType
-  //       } else {
-  //         // shared
-  //       }
-  //     } else if (result.action === Share.dismissedAction) {
-  //       // dismissed
-  //     }
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // };
-
-  const generateExcel = () => {
-    let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.aoa_to_sheet([
-      ["Odd", "Even", "Total"],
-      [1, 2, { t: "n", v: 3, f: "A2+B2" }],
-      [3, 4, { t: "n", v: 7, f: "A3+B3" }],
-      [5, 6, { t: "n", v: 10, f: "A4+B4" }],
-    ]);
-
-    XLSX.utils.book_append_sheet(wb, ws, "MyFirstSheet", true);
-
-    let ws2 = XLSX.utils.aoa_to_sheet([
-      ["Odd*2", "Even*2", "Total"],
-      [
-        { t: "n", f: "MyFirstSheet!A2*2" },
-        { t: "n", f: "MyFirstSheet!B2*2" },
-        { t: "n", f: "A2+B2" },
-      ],
-      [
-        { t: "n", f: "MyFirstSheet!A3*2" },
-        { t: "n", f: "MyFirstSheet!B3*2" },
-        { t: "n", f: "A3+B3" },
-      ],
-      [
-        { t: "n", f: "MyFirstSheet!A4*2" },
-        { t: "n", f: "MyFirstSheet!B4*2" },
-        { t: "n", f: "A4+B4" },
-      ],
-    ]);
-
-    XLSX.utils.book_append_sheet(wb, ws2, "MySecondSheet", true);
-
-    const base64 = XLSX.write(wb, { type: "base64" });
-    const filename = FileSystem.documentDirectory + "MyExcel.xlsx";
-    FileSystem.writeAsStringAsync(filename, base64, {
-      encoding: FileSystem.EncodingType.Base64,
-    }).then(() => {
-      Sharing.shareAsync(filename);
-    });
-  };
 
   return (
     <View style={styles.container}>
@@ -215,14 +160,6 @@ export default function TraverseActionScreen({ route, navigation }) {
       <LargeButton
         width="90%"
         type="f"
-        iconName="file-download"
-        primaryText="Export Traverse Data"
-        secondaryText="Start an open traverse survey"
-        onPress={generateExcel}
-      />
-      <LargeButton
-        width="90%"
-        type="f"
         iconName="calculator"
         primaryText="Compute Coordinates"
         secondaryText="Finish the adjustment computations"
@@ -243,9 +180,20 @@ export default function TraverseActionScreen({ route, navigation }) {
               included_angles: included_angles,
               distances: distances,
             }
-          );
-        }}
+            );
+          }}
       />
+          <LargeButton
+            width="90%"
+            type="f"
+            iconName="file-download"
+            primaryText="Export Traverse Data"
+            secondaryText="Start an open traverse survey"
+            onPress={()=>{
+              generateExcel(structuredData)
+              // console.log(coordinates)
+            }}
+          />
 
       <StatusBar style="auto" />
     </View>

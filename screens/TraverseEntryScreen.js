@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors } from "../colors";
 import CustomButton from "../components/CustomButton";
 import InputBar from "../components/InputBar";
@@ -37,7 +37,9 @@ import moment from "moment/moment";
 // import fs from "fs/promises"
 
 const TraverseEntryScreen = ({ route, navigation }) => {
-  const { bearings } = route.params;
+  const { bearings , previousTraverseData} = route.params;
+
+ 
   /**
    * These variables are hooks that help to keep
    *  track of certain values within the screen of the app.
@@ -186,14 +188,14 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   const storeData = async (key, value) => {
     try {
       const jsonValue = JSON.stringify(value);
-      const storedTraverses = await AsyncStorage.getItem("traverse_data");
+      const storedTraverses = await AsyncStorage.getItem(key);
       if (storedTraverses !== null) {
         traverseArray = JSON.parse(storedTraverses);
         // await AsyncStorage.setItem(key, jsonValue)
       }
       traverseArray.push(dataPayload);
       await AsyncStorage.setItem(
-        "traverse_data",
+        key,
         JSON.stringify(traverseArray)
       );
     } catch (e) {
@@ -232,26 +234,13 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       // toStations = "b.c.d.e.f.g".split(".");
       // storeData();
       // DEVELOPMENT LOGS
-      console.log("computations");
-      console.log(doComputations());
-      console.log(Object.keys(doComputations()));
-      // console.log(traverseData);
-      console.log("LENGTH");
-      console.log(traverseData.length);
-      console.log("Bearings");
-      console.log(bearings);
-
-      console.log("Alpha");
-      console.log(doComputations().alpha);
-
-      console.log("Beta");
-      console.log(doComputations().beta);
-
-      console.log("Coordinates");
-      console.log(doComputations().coordinates.coordinates);
-      console.log("======================================");
-
       let computedArrays = doComputations();
+      console.log("Included ");
+      console.log(computedArrays.included_angles)
+
+      storeData("traverse_data", traverseData)
+      storeData('coordinates', computedArrays.coordinates)
+      storeData('to_stations', toStations)
       // console.log(computedArrays);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
@@ -272,6 +261,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * An event handler for the update button
    */
   function updateItem() {
+    
     const objIndex = traverseData.findIndex((obj) => obj.id == dropdownValue);
     traverseData[objIndex] = dataPayload;
     Alert.alert(
@@ -291,16 +281,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     }
     // condition to check for duplicate stations in the station list
     //  to avoid multiple traverse sheets with the same station name
-    if (
-      traverseData.find((element) => {
-        return element.traverseStation == station;
-      })
-    ) {
-      Alert.alert(
-        "Duplicate",
-        "A field with the same station already exists.Click on update"
-      );
-    } else {
+  else {
       // condition to make sure that the data RR,LL...  are in the needed forms
       // These check for the 3 different parts of the bearing received.
       // It also test for the first value !> 360.

@@ -194,21 +194,23 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
     corrections_x.push((-sum(lat_i) / sum(distance)) * distance[index]);
     corrections_y.push((-sum(dep_i) / sum(distance)) * distance[index]);
   }
-  coordinates[0] = {
-    x: Number(instrumentStation.x),
-    y: Number(instrumentStation.y),
+  // coordinates[0] = {
+  //   x: Number(instrumentStation.x),
+  //   y: Number(instrumentStation.y),
+  // };
+
+  coordinates[1] = {
+    x: Number(instrumentStation.x) + lat_i[0],
+    y: Number(instrumentStation.y) + dep_i[0],
   };
   coordinates[distance.length] = {
     x: Number(instrumentStation.x),
     y: Number(instrumentStation.y),
   };
-  // coordinates[1] = {
-  //   x: instrumentStation.x + lat_i[0],
-  //   y: instrumentStation.y + dep_i[0],
-  // };
+ 
 
   // getting thte coordinates from positions 1 to n-1
-  for (let index = 0; index < distance.length; index++) {
+  for (let index = 1; index < distance.length; index++) {
     coordinates[index + 1] = {
       x:
         coordinates[index].x +

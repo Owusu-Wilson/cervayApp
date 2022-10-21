@@ -5,14 +5,24 @@ import { AntDesign } from "@expo/vector-icons";
 import { colors } from "../colors";
 import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const CloseTraverseScreen = ({ navigation }) => {
   const [refStation_x, setRefStation_x] = useState("");
   const [refStation_y, setRefStation_y] = useState("");
 
   const [instrumentStation_x, setInstrumentStation_x] = useState("");
   const [instrumentStation_y, setInstrumentStation_y] = useState("");
-
+ const retrieveData = async (id) => {
+    try {
+      const value = await AsyncStorage.getItem(id);
+      if (value !== null) {
+        // We have data!!
+        return (value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Closed Traverse</Text>
@@ -124,6 +134,7 @@ const CloseTraverseScreen = ({ navigation }) => {
             );
           } else {
             navigation.navigate("TraverseEntry", {
+              previousTraverseData:retrieveData('traverse_data'),
               bearings: {
                 reference_station: { x: refStation_x, y: refStation_y },
                 instrument_station: { x: instrumentStation_x, y: instrumentStation_y },

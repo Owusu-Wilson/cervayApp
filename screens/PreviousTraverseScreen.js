@@ -8,55 +8,55 @@ const PreviousTraverseScreen = () => {
   const data = [
     {
       key: 1,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 2,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 3,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 4,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 5,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 6,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 7,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 8,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 9,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 10,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 11,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 12,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
     {
       key: 13,
-      text: "Legon-001-09/12/22",
+      text: "Acrra-001-09/12/22",
     },
   ];
   return (

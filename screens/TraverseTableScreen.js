@@ -46,6 +46,7 @@ export default function TraverseTableScreen({ route, navigation }) {
 
   useEffect(() => {
     console.log(from_stations);
+    console.log(to_stations)
   });
 
   /**
@@ -61,7 +62,7 @@ export default function TraverseTableScreen({ route, navigation }) {
    */
   var structuredData = []; //a 2D array
 
-  for (let index = 0; index < to_stations.length; index++) {
+  for (let index = 0; index < from_stations.length; index++) {
     structuredData.push([
       from_stations[index],
       to_stations[index],
@@ -90,25 +91,19 @@ export default function TraverseTableScreen({ route, navigation }) {
           />
         </Table>
       </View>
-      {/* <CustomButton
+      <CustomButton
         color={colors.primaryColor}
         text={"Done"}
         width={370}
         onclick={() => {
-          // console.log(stations.length, fromStations, toStations);
+          console.log("From")
+          console.log(from_stations)
+          console.log("to")
+          console.log(to_stations)
+          console.log(coordinates)
         }}
-      /> */}
-      {/* <FloatingAction
-        color={colors.primaryColor}
-        overlayColor="rgba(240, 255, 255, 0.02)"
-        floatingIcon={<AntDesign name="back" size={24} color="white" />}
-        onPressMain={() => {
-          navigation.goBack();
-        }}
-        onPressItem={(name) => {
-          navigation.navigate(name);
-        }}
-      /> */}
+        />
+
     </View>
   );
 }

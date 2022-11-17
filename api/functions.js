@@ -95,9 +95,10 @@ function getUnadjustedBearings(includedAngles, bearing) {
 
   let temp = 0;
   for (let index = 1; index < includedAngles.length; index++) {
+    // adding a particular included angles to the previous unadjuted angle
     const element = includedAngles[index];
     temp = element + unadj_angles[index - 1];
-
+    // applying  conditions to the value calculated for
     if (temp < 180) {
       temp = temp + 180;
     } else if (temp > 180) {
@@ -174,6 +175,11 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
   let corrections_x = [];
   let corrections_y = [];
   let coordinates = [];
+
+  //
+  // [list of adjusted_bearings] [1, 4, 5, 5, 5, 5, ....]
+  // [list of distances]         [12, 4, 5, 5, 5,5 5 .....]
+
   for (let index = 0; index < adjusted_bearings.length; index++) {
     lat_i.push(
       distance[index] * Math.cos(toRadians(adjusted_bearings[index + 1]))
@@ -184,12 +190,14 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
       distance[index] * Math.sin(toRadians(adjusted_bearings[index + 1]))
     );
   }
+
   //  after computing for the arrays above, there is NaN, 0 and -0 included
   // the following code removes them to sanitize the array for further computations
   lat_i.pop();
   lat_i.pop();
   dep_i.pop();
   dep_i.pop();
+
   for (let index = 0; index < distance.length; index++) {
     corrections_x.push((-sum(lat_i) / sum(distance)) * distance[index]);
     corrections_y.push((-sum(dep_i) / sum(distance)) * distance[index]);
@@ -207,7 +215,6 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
     x: Number(instrumentStation.x),
     y: Number(instrumentStation.y),
   };
- 
 
   // getting thte coordinates from positions 1 to n-1
   for (let index = 1; index < distance.length; index++) {
@@ -235,7 +242,8 @@ function getCoordinates(adjusted_bearings, distance, instrumentStation) {
   };
 }
 // ======================================================
-/*
+
+/**
  * converts dms value to degrees .
  * @param {*} dms_figure
  * @returns

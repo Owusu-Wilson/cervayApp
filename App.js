@@ -23,38 +23,52 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [appIsReady, setAppIsReady] = useState(false);
   const [dataPresent, setDataPresent] = useState(false);
-  const getData = async () => {
+  const [previousData, setPreviousData] = useState();
+  // dummy data entered to test async storeage
+
+  const storeData = async (key, value) => {
     try {
-      const value = await AsyncStorage.getItem("user_details");
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  const getData = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
       if (value !== null) {
-        return value;
+        // value previously stored
+        // console.log(JSON.parse(value));
+        setPreviousData(value);
       }
     } catch (e) {
       // error reading value
     }
   };
-  const loadData = () => {
-    AsyncStorage.getAllKeys().then((data) => {
-      if (data !== null) {
-        setDataPresent(false);
-      }
-    });
-  };
+
   useEffect(() => {
-    init_db();
-  });
+    let l = { div: 3, num: 34 };
+    storeData("light", l);
+    console.log("stored");
+  }, []);
 
   useEffect(() => {
     async function prepare() {
       try {
+        console.log("getting data");
+        getData("user_info");
+        console.log("previous data");
+        console.log("----------------");
+        console.log(previousData);
         // Pre-load fonts, make any API calls you need to do here
         await Font.loadAsync({
           SSLight: require("./assets/fonts/SourceSansPro/SourceSansProLight.ttf"),
           SSRegular: require("./assets/fonts/SourceSansPro/SourceSansProRegular.ttf"),
           SSBold: require("./assets/fonts/SourceSansPro/SourceSansProBold.ttf"),
-        }).then(() => {
-          console.log(getData());
-        });
+        }).then(() => {});
+
         // Initializing the database file i.e creating it if it doesnt exist
 
         // Artificially delay for two seconds to simulate a slow loading

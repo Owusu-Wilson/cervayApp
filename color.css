@@ -2,3 +2,10 @@ col {
   color: #202020;
 
 }
+
+light{
+  align-items: flex-start;
+  align-self: flex-start;
+  align-content: flex-start;
+  justify-content: left;
+}

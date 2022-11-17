@@ -37,9 +37,8 @@ import moment from "moment/moment";
 // import fs from "fs/promises"
 
 const TraverseEntryScreen = ({ route, navigation }) => {
-  const { bearings , previousTraverseData} = route.params;
+  const { bearings, previousTraverseData } = route.params;
 
- 
   /**
    * These variables are hooks that help to keep
    *  track of certain values within the screen of the app.
@@ -92,8 +91,10 @@ const TraverseEntryScreen = ({ route, navigation }) => {
 
     const x2 = referenceStation_angle.x - instrumentStation_angle.x;
     const y2 = referenceStation_angle.y - instrumentStation_angle.y;
+
     let alpha = Pol(x, y);
     let beta = Pol(x2, y2);
+
     let num_traverses = traverseData.length;
     let included_angles = [];
     let distances = [];
@@ -194,10 +195,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         // await AsyncStorage.setItem(key, jsonValue)
       }
       traverseArray.push(dataPayload);
-      await AsyncStorage.setItem(
-        key,
-        JSON.stringify(traverseArray)
-      );
+      await AsyncStorage.setItem(key, JSON.stringify(traverseArray));
     } catch (e) {
       // saving error
     }
@@ -236,11 +234,11 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       // DEVELOPMENT LOGS
       let computedArrays = doComputations();
       console.log("Included ");
-      console.log(computedArrays.included_angles)
+      console.log(computedArrays.included_angles);
 
-      storeData("traverse_data", traverseData)
-      storeData('coordinates', computedArrays.coordinates)
-      storeData('to_stations', toStations)
+      storeData("traverse_data", traverseData);
+      storeData("coordinates", computedArrays.coordinates);
+      storeData("to_stations", toStations);
       // console.log(computedArrays);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
@@ -261,7 +259,6 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * An event handler for the update button
    */
   function updateItem() {
-    
     const objIndex = traverseData.findIndex((obj) => obj.id == dropdownValue);
     traverseData[objIndex] = dataPayload;
     Alert.alert(
@@ -278,10 +275,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
     // the station entry cannot be left empty.
     if (station == "") {
       Alert.alert("Empty station", "Please Fill out the Station value");
-    }
-    // condition to check for duplicate stations in the station list
-    //  to avoid multiple traverse sheets with the same station name
-  else {
+    } else {
       // condition to make sure that the data RR,LL...  are in the needed forms
       // These check for the 3 different parts of the bearing received.
       // It also test for the first value !> 360.

@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+  </head>
+  <body style="text-align: justify; padding: 10px">
+    <div style="text-align: center">
+      <h1
+        style="
+          font-size: 30px;
+          font-family: Helvetica Neue;
+          font-weight: normal;
+        "
+      >
+        SURVEY REPORT
+      </h1>
+      <p><b> Surveyor's Name: </b> ${user_details.name}</p>
+      <p><b> Survey Date: </b> ${user_details.date}</p>
+      <p><b> Survey Location: </b> ${user_details.location}</p>
+    </div>
+    <hr />
+    <table
+      style="
+        width: 90%;
+        margin-top: 20px;
+        text-align: center;
+        font-family: Helvetica Neue;
+        font-weight: normal;
+        font-size: 20px;
+      "
+    >
+      <th style="font-weight: bold">From Stations</th>
+      <th style="font-weight: bold">Coordinates X</th>
+      <th style="font-weight: bold">Coordinates Y</th>
+      <tr>
+        ${htmltable(structuredData)}
+      </tr>
+    </table>
+    <h3 style="justify-content: left">Misclose: <b>0.00009</b></h3>
+  </body>
+</html>

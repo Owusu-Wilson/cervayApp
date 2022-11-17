@@ -1,10 +1,17 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { colors } from "../colors";
 import { Card } from "../components/Card";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PreviousTraverseScreen = () => {
+  useEffect(() => {
+    let a = AsyncStorage.getItem("late").then(() => {
+      console.log(a);
+    });
+  }, []);
+
   const data = [
     {
       key: 1,

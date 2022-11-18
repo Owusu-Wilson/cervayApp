@@ -12,12 +12,12 @@ const CloseTraverseScreen = ({ navigation }) => {
 
   const [instrumentStation_x, setInstrumentStation_x] = useState("");
   const [instrumentStation_y, setInstrumentStation_y] = useState("");
- const retrieveData = async (id) => {
+  const retrieveData = async (id) => {
     try {
       const value = await AsyncStorage.getItem(id);
       if (value !== null) {
         // We have data!!
-        return (value);
+        return value;
       }
     } catch (error) {
       // Error retrieving data
@@ -134,10 +134,13 @@ const CloseTraverseScreen = ({ navigation }) => {
             );
           } else {
             navigation.navigate("TraverseEntry", {
-              previousTraverseData:retrieveData('traverse_data'),
+              previousTraverseData: retrieveData("traverse_data"),
               bearings: {
                 reference_station: { x: refStation_x, y: refStation_y },
-                instrument_station: { x: instrumentStation_x, y: instrumentStation_y },
+                instrument_station: {
+                  x: instrumentStation_x,
+                  y: instrumentStation_y,
+                },
               },
             });
           }

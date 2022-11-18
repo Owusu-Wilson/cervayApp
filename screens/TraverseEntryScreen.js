@@ -42,30 +42,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
   //  traverse or continue from data lost after aback press
 
   const { bearings } = route.params;
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        "Hold on!",
-        "Are you sure you want to go back? You might have unsaved data.",
-        [
-          {
-            text: "Cancel",
-            onPress: () => null,
-            style: "cancel",
-          },
-          { text: "YES", onPress: () => navigation.goBack() },
-        ]
-      );
-      return true;
-    };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
   /**
    * These variables are hooks that help to keep
    *  track of certain values within the screen of the app.
@@ -106,6 +83,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
    * This is to help in transporting the data across other pages and indexing the data
    */
 
+  let computations;
   function doComputations() {
     const instrumentStation_angle = bearings.instrument_station;
     const referenceStation_angle = bearings.reference_station;
@@ -262,11 +240,8 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       let computedArrays = doComputations();
       console.log("Included ");
       console.log(computedArrays.included_angles);
+      computations = computedArrays;
 
-      storeData("traverse_data", traverseData);
-      storeData("coordinates", computedArrays.coordinates);
-      storeData("to_stations", toStations);
-      console.log(traverseData);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
         tableData: traverseData,
@@ -281,7 +256,33 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       });
     }
   }
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Hold on!",
+        "Are you sure you want to go back? You might have unsaved data.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          {
+            text: "YES",
+            onPress: () => navigation.goBack(),
+          },
+        ]
+      );
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [TraverseEntryScreen]);
   /**
    * Function to update the data after it is selected from the dropdown.
    * An event handler for the update button

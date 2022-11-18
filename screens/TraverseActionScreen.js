@@ -5,6 +5,7 @@ import {
   Share,
   Alert,
   PermissionsAndroid,
+  ScrollView,
 } from "react-native";
 import React from "react";
 import { colors } from "../colors";
@@ -44,6 +45,7 @@ export default function TraverseActionScreen({ route, navigation }) {
     adjusted_bearings,
     included_angles,
     distances,
+    misclose,
   } = route.params;
   let coordinates_x = [];
   let coordinates_y = [];
@@ -53,7 +55,7 @@ export default function TraverseActionScreen({ route, navigation }) {
     coordinates_y.push(element.y);
   });
   var structuredData = []; //a 2D array
-structuredData[0]  = ["To Stations", "Coordinates X","Coordinates Y"]
+  structuredData[0] = ["To Stations", "Coordinates X", "Coordinates Y"];
   for (let index = 0; index < to_stations.length; index++) {
     structuredData.push([
       to_stations[index],
@@ -125,76 +127,97 @@ structuredData[0]  = ["To Stations", "Coordinates X","Coordinates Y"]
     }
   };
 
-
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Select an option to Continue</Text>
       {/* include view traverse data */}
       {/* <Card onPress={onShare} icon="download" text="Export Traverse Data" /> */}
-      <LargeButton
-        width="90%"
-        type="mi"
-        iconName="table-view"
-        primaryText="View Traverse Data"
-        secondaryText="Select to view traverse data collected"
-        onPress={() => {
-          navigation.navigate(
-            "TraverseTable",
-            /**
-             * object sent to the next scren in the route
-             */
-            {
-              bearings: bearings,
-              from_stations: from_stations,
-              to_stations: to_stations,
-              tableData: tableData,
-              coordinates: coordinates,
-              unadjusted_bearings: unadjusted_bearings,
-              adjusted_bearings: adjusted_bearings,
-              included_angles: included_angles,
-              distances: distances,
-            }
-          );
-        }}
-      />
-      <LargeButton
-        width="90%"
-        type="f"
-        iconName="calculator"
-        primaryText="Compute Coordinates"
-        secondaryText="Finish the adjustment computations"
-        onPress={() => {
-          navigation.navigate(
-            "Coordinates",
-            /**
-             * object sent to the next scren in the route
-             */
-            {
-              bearings: bearings,
-              from_stations: from_stations,
-              to_stations: to_stations,
-              tableData: tableData,
-              coordinates: coordinates,
-              unadjusted_bearings: unadjusted_bearings,
-              adjusted_bearings: adjusted_bearings,
-              included_angles: included_angles,
-              distances: distances,
-            }
+      <ScrollView>
+        <LargeButton
+          width="90%"
+          type="mi"
+          iconName="table-view"
+          primaryText="View Traverse Data"
+          secondaryText="Select to view traverse data collected"
+          onPress={() => {
+            navigation.navigate(
+              "TraverseTable",
+              /**
+               * object sent to the next scren in the route
+               */
+              {
+                bearings: bearings,
+                from_stations: from_stations,
+                to_stations: to_stations,
+                tableData: tableData,
+                coordinates: coordinates,
+                unadjusted_bearings: unadjusted_bearings,
+                adjusted_bearings: adjusted_bearings,
+                included_angles: included_angles,
+                distances: distances,
+              }
             );
           }}
-      />
-          <LargeButton
-            width="90%"
-            type="f"
-            iconName="file-download"
-            primaryText="Export Traverse Data"
-            secondaryText="Start an open traverse survey"
-            onPress={()=>{
-              generateExcel(structuredData)
-              // console.log(coordinates)
-            }}
-          />
-
+        />
+        <LargeButton
+          width="90%"
+          type="f"
+          iconName="calculator"
+          primaryText="Compute Coordinates"
+          secondaryText="Finish the adjustment computations"
+          onPress={() => {
+            navigation.navigate(
+              "Coordinates",
+              /**
+               * object sent to the next scren in the route
+               */
+              {
+                bearings: bearings,
+                from_stations: from_stations,
+                to_stations: to_stations,
+                tableData: tableData,
+                coordinates: coordinates,
+                unadjusted_bearings: unadjusted_bearings,
+                adjusted_bearings: adjusted_bearings,
+                included_angles: included_angles,
+                distances: distances,
+              }
+            );
+          }}
+        />
+        <LargeButton
+          width="90%"
+          type="f"
+          iconName="file-download"
+          primaryText="Export Traverse Data"
+          secondaryText="Start an open traverse survey"
+          onPress={() => {
+            generateExcel(structuredData);
+            // console.log(coordinates)
+          }}
+        />
+        <LargeButton
+          width="90%"
+          type="i"
+          iconName="md-clipboard"
+          primaryText="View Report"
+          secondaryText="View and print pdf report for the traverse"
+          onPress={() => {
+            navigation.navigate("Report", {
+              bearings: bearings,
+              from_stations: from_stations,
+              to_stations: to_stations,
+              tableData: tableData,
+              coordinates: coordinates,
+              unadjusted_bearings: unadjusted_bearings,
+              adjusted_bearings: adjusted_bearings,
+              included_angles: included_angles,
+              distances: distances,
+              misclose: misclose,
+            });
+          }}
+        />
+      </ScrollView>
       <StatusBar style="auto" />
     </View>
   );

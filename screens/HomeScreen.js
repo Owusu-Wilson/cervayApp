@@ -24,7 +24,7 @@ const HomeScreen = ({ route, navigation }) => {
             text={"Start New Traverse"}
             width={370}
             onclick={() => {
-              navigation.navigate("HomeStack");
+              navigation.navigate("form");
             }}
           />
           {/* for later */}

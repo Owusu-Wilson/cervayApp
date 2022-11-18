@@ -46,7 +46,7 @@ export default function TraverseTableScreen({ route, navigation }) {
 
   useEffect(() => {
     console.log(from_stations);
-    console.log(to_stations)
+    console.log(to_stations);
   });
 
   /**
@@ -96,14 +96,13 @@ export default function TraverseTableScreen({ route, navigation }) {
         text={"Done"}
         width={370}
         onclick={() => {
-          console.log("From")
-          console.log(from_stations)
-          console.log("to")
-          console.log(to_stations)
-          console.log(coordinates)
+          console.log("From");
+          console.log(from_stations);
+          console.log("to");
+          console.log(to_stations);
+          console.log(coordinates);
         }}
-        />
-
+      />
     </View>
   );
 }

@@ -9,6 +9,18 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import HomeScreen from "./screens/HomeScreen";
 import PreviousTraverseScreen from "./screens/PreviousTraverseScreen";
+
+import TraverseActionScreen from "./screens/TraverseActionScreen";
+import AdjustmentResultsScreen from "./screens/AdjustmentResultsScreen";
+import OpenTraverseScreen from "./screens/OpenTraverseScreen";
+import CloseTraverseScreen from "./screens/CloseTraverseScreen";
+import TraverseEntryScreen from "./screens/TraverseEntryScreen";
+import NextOpenTraverseScreen from "./screens/NextOpenTraverseScreen";
+import TraverseTableScreen from "./screens/TraverseTableScreen";
+import TempTraverseScreen from "./screens/TempTraverseScreen";
+import InfoFormScreen from "./screens/InfoFormScreen";
+import CoordinatesTableScreen from "./screens/CoordinatesTableScreen";
+import ReportScreen from "./screens/ReportScreen";
 import { init_db } from "./db";
 
 import Buttomtab from "./navigation/tabs";
@@ -49,12 +61,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    let l = { div: 3, num: 34 };
-    storeData("light", l);
-    console.log("stored");
-  }, []);
-
-  useEffect(() => {
     async function prepare() {
       try {
         console.log("getting data");
@@ -87,6 +93,10 @@ export default function App() {
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
+      AsyncStorage.removeItem("coordinates");
+      AsyncStorage.removeItem("misclose");
+      AsyncStorage.removeItem("to_stations");
+
       // This tells the splash screen to hide immediately! If we call this after
       // `setAppIsReady`, then we may see a blank screen while the app is
       // loading its initial state and rendering its first pixels. So instead,
@@ -114,12 +124,24 @@ export default function App() {
           name="PreviousTraverse"
           component={PreviousTraverseScreen}
         />
+
         <Stack.Screen
           options={{ headerShown: false }}
-          name="HomeStack"
-          component={Buttomtab}
+          name="form"
+          component={InfoFormScreen}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="refStation"
+          component={CloseTraverseScreen}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="TraverseEntry"
+          component={TraverseEntryScreen}
+        />
+        <Stack.Screen
           options={{ headerShown: false }}
           name="TraverseAction"
           component={TraverseActionScreen}
@@ -136,9 +158,19 @@ export default function App() {
         />
         <Stack.Screen
           options={{ headerShown: false }}
+          name="Coordinates"
+          component={CoordinatesTableScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
           name="OpenTraverse"
           component={OpenTraverseScreen}
-        /> */}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Report"
+          component={ReportScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -2,7 +2,7 @@
   "expo": {
     "name": "traverseapp",
     "slug": "traverseapp",
-    "version": "1.0.01",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -6,13 +6,13 @@ import { colors } from "../colors";
 import InputBar from "../components/InputBar";
 import CustomButton from "../components/CustomButton";
 
-const OpenTraverseScreen = ({ navigation }) => {
+const OpenTraverseScreen = ({ route, navigation }) => {
   const [initialX1, setInitialX1] = useState("");
   const [initialY1, setInitialY1] = useState("");
 
   const [initialX2, setInitialX2] = useState("");
   const [initialY2, setInitialY2] = useState("");
-
+  const { name, location, date } = route.params;
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Open Traverse</Text>

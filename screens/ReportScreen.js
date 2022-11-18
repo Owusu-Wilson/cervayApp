@@ -9,11 +9,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors } from "react-native-paper";
 import moment from "moment";
 import { generateExcel } from "../api/handleExport";
-export default function ReportScreen() {
+export default function ReportScreen({ route, navigation }) {
+  const {
+    from_stations,
+    to_stations,
+    bearings,
+    tableData,
+    coordinates,
+    unadjusted_bearings,
+    adjusted_bearings,
+    included_angles,
+    distances,
+    misclose,
+  } = route.params;
   const [user_details, setUserDetails] = useState("");
-  const [coordinates, setCoordinates] = useState([]);
-  const [toStations, setToStations] = useState([]);
-  const [traverses, setTraverses] = useState([{}]);
+
   let timeStamp = moment().toDate(user_details.date);
   let date =
     String(timeStamp.toUTCString().split(" ")[0]) +
@@ -23,6 +33,7 @@ export default function ReportScreen() {
     String(timeStamp.toUTCString().split(" ")[2]) +
     " " +
     String(timeStamp.toUTCString().split(" ")[3]);
+
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("user_info");
@@ -32,36 +43,12 @@ export default function ReportScreen() {
       }
     } catch (e) {
       // error reading value
+      console.log(e);
     }
   };
-  const getCoordinates = async () => {
-    try {
-      const value = await AsyncStorage.getItem("coordinates");
-      if (value !== null) {
-        // value previously stored
-        setCoordinates(JSON.parse(value));
-      }
-    } catch (e) {
-      // error reading value
-    }
-  };
-  const getStations = async () => {
-    try {
-      const value = await AsyncStorage.getItem("to_stations");
-      if (value !== null) {
-        // value previously stored
-        setToStations(JSON.parse(value));
-      }
-    } catch (e) {
-      // error reading value
-    }
-  };
-
   useEffect(() => {
     getData();
-    getCoordinates();
-    getStations();
-  });
+  }, []);
 
   let coordinates_x = [];
   let coordinates_y = [];
@@ -73,10 +60,10 @@ export default function ReportScreen() {
 
   var structuredData = [];
 
-  for (let index = 0; index < toStations.length; index++) {
+  for (let index = 0; index < to_stations.length; index++) {
     if (coordinates) {
       structuredData.push([
-        toStations[index],
+        to_stations[index],
         coordinates_x[index],
         coordinates_y[index],
       ]);
@@ -112,17 +99,6 @@ export default function ReportScreen() {
     setSelectedPrinter(printer);
   };
   // traverse_data
-  const retrieveData = async (id) => {
-    try {
-      const value = await AsyncStorage.getItem(id);
-      if (value !== null) {
-        // We have data!!
-        return value;
-      }
-    } catch (error) {
-      // Error retrieving data
-    }
-  };
 
   // =============================================
   const html = `
@@ -185,19 +161,12 @@ export default function ReportScreen() {
       <CustomButton
         color={colors.primaryColor}
         width={370}
-        text="Print"
+        text="Print to PDF"
         onclick={() => {
           printToFile();
         }}
       />
-      <CustomButton
-        color={colors.primaryColor}
-        width={370}
-        text="Export To Excel"
-        onclick={() => {
-          generateExcel(structuredData);
-        }}
-      />
+
       {/* </View> */}
     </View>
   );

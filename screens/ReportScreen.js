@@ -30,7 +30,6 @@ export default function ReportScreen() {
         // value previously stored
         setUserDetails(JSON.parse(value));
       }
-   
     } catch (e) {
       // error reading value
     }
@@ -60,7 +59,7 @@ export default function ReportScreen() {
 
   useEffect(() => {
     getData();
-     getCoordinates()
+    getCoordinates();
     getStations();
   });
 
@@ -72,15 +71,7 @@ export default function ReportScreen() {
     coordinates_y.push(element.y);
   });
 
-  var  structuredData = [
-    [1,334250.45, 1197024.75 ]
-  [2,334355.7642455581, 1196948.414460554 ],
-  ​[3,334418.7055755842, 1196983.8591471002 ],
-  [4,334341.6586012374, 1197080.4771477517 ],
-  [5,334273.1300023768, 1197126.3359519797 ],
-  [6,334225.4199483625, 1197114.6771782916 ],
-  [7,334250.45, 1197024.75 ]
-    ]
+  var structuredData = [];
 
   for (let index = 0; index < toStations.length; index++) {
     if (coordinates) {
@@ -88,12 +79,10 @@ export default function ReportScreen() {
         toStations[index],
         coordinates_x[index],
         coordinates_y[index],
-
       ]);
     }
   }
   const [selectedPrinter, setSelectedPrinter] = React.useState();
-
 
   var instrumentStation = [];
 

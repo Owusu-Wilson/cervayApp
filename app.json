@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "cervayapp",
-    "slug": "cervayapp",
+    "name": "traverseapp",
+    "slug": "traverseapp",
     "version": "1.0.01",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -25,7 +23,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.slabsgh.cervayapp"
+      "package": "com.slabsgh.traverseapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"

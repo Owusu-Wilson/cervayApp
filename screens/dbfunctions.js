@@ -9,7 +9,8 @@ async function addData(data) {
 }
 async function getData(key) {
   try {
-    await AsyncStorage.getItem(`traverseSheet${data.id}`);
+    let a = await AsyncStorage.getItem(key);
+    return a;
   } catch (error) {
     console.log(error);
   }

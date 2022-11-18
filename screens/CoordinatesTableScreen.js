@@ -36,6 +36,7 @@ export default function CoordinatesTableScreen({ route, navigation }) {
     unadjusted_bearings,
     adjusted_bearings,
     included_angles,
+    misclose,
   } = route.params;
 
   let coordinates_x = [];
@@ -72,6 +73,7 @@ export default function CoordinatesTableScreen({ route, navigation }) {
       <Text style={styles.value}>Instrument Station:</Text>
       <Text style={styles.value}>X: {bearings.instrument_station.x}</Text>
       <Text style={styles.value}>Y: {bearings.instrument_station.y}</Text>
+      <Text style={styles.value}>Misclose: {misclose}</Text>
       <View style={styles.tableContainer}>
         <Table borderStyle={styles.table}>
           <Row data={tableHead} style={styles.head} textStyle={styles.head} />
@@ -82,9 +84,10 @@ export default function CoordinatesTableScreen({ route, navigation }) {
       <View style={styles.btnContainer}>
         <CustomButton
           color={colors.primaryColor}
-          text={"Done"}
+          text={"Back"}
           width={370}
           onclick={() => {
+            navigation.goBack();
             console.log("COORDINATES");
             console.log("================================");
             console.log([coordinates_x, coordinates_y]);

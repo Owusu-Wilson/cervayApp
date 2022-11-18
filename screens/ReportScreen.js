@@ -1,5 +1,4 @@
 import { FontAwesome } from "@expo/vector-icons";
-
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Button, Platform, Text } from "react-native";
 import * as Print from "expo-print";
@@ -9,10 +8,12 @@ import CustomButton from "../components/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors } from "react-native-paper";
 import moment from "moment";
+import { generateExcel } from "../api/handleExport";
 export default function ReportScreen() {
   const [user_details, setUserDetails] = useState("");
   const [coordinates, setCoordinates] = useState([]);
   const [toStations, setToStations] = useState([]);
+  const [traverses, setTraverses] = useState([{}]);
   let timeStamp = moment().toDate(user_details.date);
   let date =
     String(timeStamp.toUTCString().split(" ")[0]) +
@@ -25,10 +26,11 @@ export default function ReportScreen() {
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("user_info");
-      if (value !== null) {
+      if (value !== undefined) {
         // value previously stored
         setUserDetails(JSON.parse(value));
       }
+   
     } catch (e) {
       // error reading value
     }
@@ -58,7 +60,7 @@ export default function ReportScreen() {
 
   useEffect(() => {
     getData();
-    //  getCoordinates()
+     getCoordinates()
     getStations();
   });
 
@@ -70,32 +72,31 @@ export default function ReportScreen() {
     coordinates_y.push(element.y);
   });
 
-  var structuredData = []; //a 2D array
+  var  structuredData = [
+    [1,334250.45, 1197024.75 ]
+  [2,334355.7642455581, 1196948.414460554 ],
+  ​[3,334418.7055755842, 1196983.8591471002 ],
+  [4,334341.6586012374, 1197080.4771477517 ],
+  [5,334273.1300023768, 1197126.3359519797 ],
+  [6,334225.4199483625, 1197114.6771782916 ],
+  [7,334250.45, 1197024.75 ]
+    ]
 
   for (let index = 0; index < toStations.length; index++) {
-    structuredData.push([
-      toStations[index],
-      coordinates_x[index],
-      coordinates_y[index],
-    ]);
+    if (coordinates) {
+      structuredData.push([
+        toStations[index],
+        coordinates_x[index],
+        coordinates_y[index],
+
+      ]);
+    }
   }
   const [selectedPrinter, setSelectedPrinter] = React.useState();
 
-  const print = async () => {
-    // On iOS/android prints the given html. On web prints the HTML from the current page.
-    await Print.printAsync({
-      html,
-      printerUrl: selectedPrinter?.url, // iOS only
-    });
-  };
-  var structuredData = [
-    ["me 1", 61234.65, 1221221.43],
-    ["me 1", 61234.65, 1221221.43],
-    ["me 1", 61234.65, 1221221.43],
-    ["me 1", 61234.65, 1221221.43],
-    ["me 1", 61234.65, 1221221.43],
-    ["me 1", 61234.65, 1221221.43],
-  ];
+
+  var instrumentStation = [];
+
   const htmltable = (listdata) => {
     let t = "";
     for (let i in listdata) {
@@ -133,6 +134,7 @@ export default function ReportScreen() {
       // Error retrieving data
     }
   };
+
   // =============================================
   const html = `
   <html>
@@ -168,14 +170,14 @@ export default function ReportScreen() {
         font-size: 20px;
       "
     >
-      <th style="font-weight: bold">From Stations</th>
+      <th style="font-weight: bold">Stations</th>
       <th style="font-weight: bold">Coordinates X</th>
       <th style="font-weight: bold">Coordinates Y</th>
       <tr>
         ${htmltable(structuredData)}
       </tr>
     </table>
-    <h3 style="justify-content: left">Misclose: <b>0.00009</b></h3>
+    <h3 style="justify-content: left">Misclose: <b>${misclose}</b></h3>
   </body>
 </html>
 `;
@@ -188,18 +190,25 @@ export default function ReportScreen() {
       <Text style={styles.label}>Survey Date</Text>
       <Text style={styles.dataText}>{date}</Text>
       <Text style={styles.label}>Survey Location</Text>
-      <Text style={styles.dataText}>{String(user_details.location)}</Text>
+      <Text style={styles.lastdataText}>{String(user_details.location)}</Text>
 
       {/* <View style={styles.btnContainer}> */}
-
       <CustomButton
         color={colors.primaryColor}
+        width={370}
         text="Print"
         onclick={() => {
           printToFile();
         }}
       />
-
+      <CustomButton
+        color={colors.primaryColor}
+        width={370}
+        text="Export To Excel"
+        onclick={() => {
+          generateExcel(structuredData);
+        }}
+      />
       {/* </View> */}
     </View>
   );
@@ -225,12 +234,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 50,
   },
+  lastdataText: {
+    color: colors.primaryColor,
+    fontFamily: "SSRegular",
+    fontSize: 20,
+    marginBottom: 100,
+  },
 
   btnContainer: {
+    flex: 1 / 5,
     marginHorizontal: 20,
+    top: "30%",
   },
   btn: {
-    height: 60,
+    marginHorizontal: 20,
   },
   top: {
     flex: 4 / 10,

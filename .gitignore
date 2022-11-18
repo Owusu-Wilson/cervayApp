@@ -13,3 +13,9 @@ web-build/
 firebase.js
 # macOS
 .DS_Store
+api/asyncvars.txt
+api/lat-and-departure.txt
+api/notes.txt
+api/index.html
+api/line.js
+api/tr.js

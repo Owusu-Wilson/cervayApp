@@ -18,17 +18,6 @@ const HomeScreen = ({ route, navigation }) => {
       <ImageBackground source={image} resizeMode="cover" style={styles.image}>
         {/* <Text style={styles.head}>Inside</Text> */}
         <View style={styles.btnContainer}>
-          {!show && (
-            <CustomButton
-              // style={styles.btn}
-              color={colors.primaryColor}
-              text={"View Previous Works"}
-              width={370}
-              onclick={() => {
-                navigation.navigate("PreviousTraverse");
-              }}
-            />
-          )}
           <CustomButton
             style={styles.btn}
             color={colors.primaryColor}
@@ -38,6 +27,18 @@ const HomeScreen = ({ route, navigation }) => {
               navigation.navigate("HomeStack");
             }}
           />
+          {/* for later */}
+          {/* {!show && (
+            <CustomButton
+              // style={styles.btn}
+              color={colors.primaryColor}
+              text={"View Previous Works"}
+              width={370}
+              onclick={() => {
+                navigation.navigate("PreviousTraverse");
+              }}
+            />
+          )} */}
         </View>
       </ImageBackground>
     </View>

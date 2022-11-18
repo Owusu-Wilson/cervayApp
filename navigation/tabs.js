@@ -147,7 +147,7 @@ const Buttomtab = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Export"
         component={ExportScreen}
         options={{
@@ -177,7 +177,7 @@ const Buttomtab = () => {
             </View>
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Report"
         component={ReportScreen}

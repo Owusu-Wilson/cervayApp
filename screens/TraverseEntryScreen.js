@@ -1,5 +1,6 @@
 import {
   Alert,
+  BackHandler,
   StyleSheet,
   Text,
   View,
@@ -37,8 +38,34 @@ import moment from "moment/moment";
 // import fs from "fs/promises"
 
 const TraverseEntryScreen = ({ route, navigation }) => {
-  const { bearings, previousTraverseData } = route.params;
+  // code that runs at the beginning for permission to start new
+  //  traverse or continue from data lost after aback press
 
+  const { bearings } = route.params;
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert(
+        "Hold on!",
+        "Are you sure you want to go back? You might have unsaved data.",
+        [
+          {
+            text: "Cancel",
+            onPress: () => null,
+            style: "cancel",
+          },
+          { text: "YES", onPress: () => navigation.goBack() },
+        ]
+      );
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   /**
    * These variables are hooks that help to keep
    *  track of certain values within the screen of the app.
@@ -149,7 +176,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       beta: beta,
       distances: distances,
       included_angles: included_angles,
-
+      misclose: adjusted_bearingsObject.misclose,
       unadjusted_bearings: unadjusted_bearings,
       adjusted_bearings: adjusted_bearings,
       coordinates: coordinates,
@@ -239,7 +266,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
       storeData("traverse_data", traverseData);
       storeData("coordinates", computedArrays.coordinates);
       storeData("to_stations", toStations);
-      // console.log(computedArrays);
+      console.log(traverseData);
       navigation.navigate("TraverseAction", {
         bearings: bearings,
         tableData: traverseData,
@@ -250,6 +277,7 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         from_stations: fromStations,
         included_angles: computedArrays.included_angles,
         distances: computedArrays.distances,
+        misclose: computedArrays.misclose,
       });
     }
   }
@@ -365,7 +393,9 @@ const TraverseEntryScreen = ({ route, navigation }) => {
         onChangeText={(text) => setStation(text)}
         width={350}
       />
-      <Text style={styles.warningInfo}>Use dot (.) as a seperator</Text>
+      <Text style={styles.warningInfo}>
+        Use dot (.) as a seperator for angles
+      </Text>
 
       <View style={styles.row}>
         <InputBar
@@ -614,7 +644,7 @@ const styles = StyleSheet.create({
     color: "red",
     fontFamily: "SSRegular",
     fontSize: 20,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     paddingRight: 40,
     paddingBottom: 5,
   },

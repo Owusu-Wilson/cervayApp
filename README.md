@@ -140,7 +140,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Your Name - [@your_twitter](https://twitter.com/your_username) - owusuwilson980@gmail.com
 
 Project Link: [https://github.com/Owusu-Wilson/cervayApp](https://github.com/Owusu-Wilson/cervayApp)
 
